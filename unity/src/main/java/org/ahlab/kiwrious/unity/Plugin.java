@@ -8,8 +8,6 @@ import java.util.Map;
 public class Plugin {
 
     private static final Plugin ourInstance = new Plugin();
-    private static  final  String LOGTAG = "KIWRIOUS";
-    private long startTime;
 
     private float conductivity = 1.2f;
     private float voc = 32;
@@ -32,12 +30,6 @@ public class Plugin {
     }
 
     private Plugin(){
-        Log.i(LOGTAG, "Created Plugin");
-        startTime = System.currentTimeMillis();
-    }
-
-    public double getElapsedTime(){
-        return (System.currentTimeMillis()-startTime)/1000.0f;
     }
 
     public float getConductivity(){

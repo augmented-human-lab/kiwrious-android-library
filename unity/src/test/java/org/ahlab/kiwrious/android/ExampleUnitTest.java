@@ -1,4 +1,4 @@
-package org.ahlab.kiwrious.unity;
+package org.ahlab.kiwrious.android;
 
 import org.junit.Test;
 

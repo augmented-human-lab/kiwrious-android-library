@@ -1,9 +1,4 @@
-package org.ahlab.kiwrious.unity;
-
-import android.util.Log;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.ahlab.kiwrious.android;
 
 public class Plugin {
 

@@ -1,6 +1,5 @@
-package org.ahlab.kiwrious.unity;
+package org.ahlab.kiwrious.android;
 
-import java.util.Dictionary;
 import java.util.Map;
 
 public class SensorData {

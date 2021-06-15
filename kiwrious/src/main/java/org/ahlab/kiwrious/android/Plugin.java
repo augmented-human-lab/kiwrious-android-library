@@ -1,5 +1,19 @@
 package org.ahlab.kiwrious.android;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+
+import android.content.Context;
+
+
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.navigation.NavigationView;
+
+import org.ahlab.kiwrious.android.serial.SerialCommunication;
+import org.ahlab.kiwrious.android.utils.Constants;
+
 public class Plugin {
 
     private static final Plugin ourInstance = new Plugin();
@@ -19,6 +33,9 @@ public class Plugin {
     private boolean uv_lux_online = true;
     private boolean humidity_temperature_online = true;
     private boolean color_online = true;
+
+
+    private SerialCommunication mSerialCommunication;
 
     public static Plugin getInstance() {
         return ourInstance;
@@ -61,6 +78,16 @@ public class Plugin {
 
     public float getColorV(){
         return color_v;
+    }
+
+
+    public void StartSerialReader(){
+        mSerialCommunication = SerialCommunication.getInstance(Application.getContext());
+        mSerialCommunication.startCommunications();
+    }
+
+    public void StopSerialReader(){
+
     }
 
 }

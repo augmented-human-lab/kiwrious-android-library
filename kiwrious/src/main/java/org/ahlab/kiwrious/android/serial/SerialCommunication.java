@@ -9,6 +9,7 @@ import android.hardware.usb.UsbManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
 import org.ahlab.kiwrious.android.utils.Constants;
 
 
@@ -131,6 +132,10 @@ public class SerialCommunication extends Activity implements SerialInterface {
             instance = new  SerialCommunication(eContext);
         }
         return instance;
+    }
+
+    public boolean isActive () {
+        return mFTDIDriver.isConnected();
     }
 
     public boolean startCommunications () {
@@ -479,6 +484,7 @@ public class SerialCommunication extends Activity implements SerialInterface {
             Log.w("serialCommunication", "--------------------- Serial UI Stopped -------------------");
         }
 
+        ServiceBlockingQueue.disableQueue();
         QueueExtractor.disableQueue();
 
         Intent intent = new Intent();

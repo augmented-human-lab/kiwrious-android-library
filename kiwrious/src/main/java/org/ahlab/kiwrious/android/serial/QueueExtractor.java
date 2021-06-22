@@ -13,7 +13,6 @@ public class QueueExtractor {
     private QueueExtractor () {
         queueRx = new ArrayBlockingQueue<int []>(60);
         queueTx = new ArrayBlockingQueue<byte []>(60);
-        isQueueEnabled = true;
     }
 
     public static QueueExtractor getInstance() {

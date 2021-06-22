@@ -22,7 +22,6 @@ public class QueueWriter extends Thread {
 
     @Override
     public void run() {
-        ServiceBlockingQueue.enableQueue();
         while (ServiceBlockingQueue.getServiceStatus()) {
             int[] eData = new int[9];
             int[] aux;
@@ -31,7 +30,7 @@ public class QueueWriter extends Thread {
                 System.arraycopy(aux, 0, eData, 0, eData.length);
                 serviceQueue.offer(eData);
             } catch (Exception e) {
-                Log.e("Serial Interrupt", e.getMessage());
+                Log.e("Serial Interrupt", "Serial Read Thread Interrupted");
                 break;
             }
         }

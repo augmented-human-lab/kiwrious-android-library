@@ -59,7 +59,7 @@ public class QueueReader extends Thread {
 
 
             } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "Serial Read Thread Interrupted");
             }
         }
         super.run();

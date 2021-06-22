@@ -1,17 +1,18 @@
 package org.ahlab.kiwrious.android;
 
+import android.app.Activity;
 import android.content.Context;
 
 public class Application extends android.app.Application {
 
     /** Instance of the current application. */
-    private static Application instance;
+    private static Context instance;
 
     /**
      * Constructor.
      */
-    public Application() {
-        instance = this;
+    public Application(Context context) {
+        instance = context;
     }
 
     /**

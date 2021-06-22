@@ -1,17 +1,8 @@
 package org.ahlab.kiwrious.android.tasks;
 
-import android.widget.TextView;
-
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class SensorDecoder {
-
-    private final ArrayList<TextView> textViews;
-
-    public SensorDecoder(ArrayList<TextView> textViews) {
-        this.textViews = textViews;
-    }
 
     /**
      * COLOUR:
@@ -24,24 +15,24 @@ public class SensorDecoder {
      *   temperatureVOC   --> mValues[0]
      *   equivalentCO2    --> mValues[1]
      */
+
     public void decodeDefaultValues(Integer... mValues) {
 
-        int i = 0;
-        for (TextView textView : textViews) {
-            textView.setText(String.format(Locale.getDefault(),"%d", mValues[i]));
-            i++;
+        for (Integer mValue : mValues) {
+            String.format(Locale.getDefault(),"%d", mValue);
         }
     }
 
-    public void decodeConductivity(Integer... mValues) {
+    public String decodeConductivity(Integer... mValues) {
 
         long resistance = (long) mValues[0] * mValues[1];
         float uSiemens = (1 / (float) resistance) * 1000000;
-        textViews.get(0).setText(String.format(Locale.getDefault(), "%.2f", uSiemens));
+        return (String.format(Locale.getDefault(), "%.2f", uSiemens));
     }
 
-    public void decodeHumidity(Integer... mValues) {
+    public String decodeHumidity(Integer... mValues) {
 
+        StringBuilder value = new StringBuilder();
         String message;
         int hundreds;
         int tens;
@@ -50,8 +41,7 @@ public class SensorDecoder {
         int cents;
         int data;
 
-        int i = 0;
-        for (TextView textView : textViews) {
+        for (int i = 0; i < 2; i++) {
             hundreds = 0;
             tens = 0;
             units = 0;
@@ -89,10 +79,9 @@ public class SensorDecoder {
 
             cents = data;
             message += Integer.toString(cents);
-
-            textView.setText(message);
-            i++;
+            value.append(" ").append(message);
         }
+        return value.toString().trim();
     }
 
     public void decodeUV(Integer... mValues) {
@@ -101,15 +90,11 @@ public class SensorDecoder {
         long H;
         long L;
 
-        int i = 0;
-        for (TextView textView : textViews) {
+        for (int i = 0; i < mValues.length; i++) {
 
             H = mValues[i * 2 + 1];
             L = mValues[i * 2];
             message = String.format(Locale.getDefault(), "%.2f", Float.intBitsToFloat((int) ((H << 16) | L )));
-            textView.setText(message);
-
-            i++;
         }
     }
 

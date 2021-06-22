@@ -1,18 +1,8 @@
 package org.ahlab.kiwrious.android;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-
-import android.content.Context;
-
-
-import androidx.appcompat.widget.Toolbar;
-
-import com.google.android.material.navigation.NavigationView;
-
 import org.ahlab.kiwrious.android.serial.SerialCommunication;
-import org.ahlab.kiwrious.android.utils.Constants;
+import org.ahlab.kiwrious.android.service.QueueReader;
+import org.ahlab.kiwrious.android.service.QueueWriter;
 
 public class Plugin {
 
@@ -22,8 +12,8 @@ public class Plugin {
     private float voc = 32;
     private float uv = 2.0f;
     private float lux = 80;
-    private float humidity = 70;
-    private float temperature = 30;
+    private float humidity = -70;
+    private float temperature = -30;
     private float color_h = 102;
     private float color_s = 102;
     private float color_v = 103;
@@ -41,7 +31,15 @@ public class Plugin {
         return ourInstance;
     }
 
-    private Plugin(){
+    public Plugin() {
+    }
+
+    public void setHumidity(float humidity) {
+        this.humidity = humidity;
+    }
+
+    public void setTemperature(float temperature) {
+        this.temperature = temperature;
     }
 
     public float getConductivity(){
@@ -84,6 +82,12 @@ public class Plugin {
     public void StartSerialReader(){
         mSerialCommunication = SerialCommunication.getInstance(Application.getContext());
         mSerialCommunication.startCommunications();
+
+        QueueWriter queueWriter = new QueueWriter();
+        queueWriter.start();
+
+        QueueReader queueReader = new QueueReader(this);
+        queueReader.start();
     }
 
     public void StopSerialReader(){

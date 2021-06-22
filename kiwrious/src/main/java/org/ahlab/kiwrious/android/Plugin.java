@@ -81,7 +81,6 @@ public class Plugin {
 
     public void StartSerialReader(){
         mSerialCommunication = SerialCommunication.getInstance(Application.getContext());
-        mSerialCommunication.startCommunications();
 
         QueueWriter queueWriter = new QueueWriter();
         queueWriter.start();

@@ -31,7 +31,7 @@ public class QueueWriter extends Thread {
                 System.arraycopy(aux, 0, eData, 0, eData.length);
                 serviceQueue.offer(eData);
             } catch (Exception e) {
-                Log.e("Serial Interrupt", e.toString());
+                Log.e("Serial Interrupt", e.getMessage());
                 break;
             }
         }

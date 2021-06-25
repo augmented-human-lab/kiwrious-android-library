@@ -54,7 +54,11 @@ public class QueueReader extends Thread {
             try {
                 aux = ServiceBlockingQueue.getServiceStatus() ? (int[]) serviceQueue.take() : (int[]) blockingQueueRx.poll(250, TimeUnit.MILLISECONDS);
                 System.arraycopy(aux, 0, eData, 0, eData.length);
-                Integer[] publishArray = Arrays.stream(eData).boxed().toArray(Integer[]::new);
+                Object[] boxedStream = Arrays.stream(eData).boxed().toArray();
+                Integer[] publishArray = new Integer[KIWRIOUS_SERIAL_FRAME_SIZE_RX];
+                for(int i = 0 ; i<KIWRIOUS_SERIAL_FRAME_SIZE_RX; i++){
+                    publishArray[i] = (int)boxedStream[i];
+                }
                 decode(publishArray);
 
 

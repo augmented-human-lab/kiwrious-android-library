@@ -38,9 +38,6 @@ public class Plugin {
     QueueReader queueReader;
 
     private Plugin () {
-
-        mSerialCommunication = SerialCommunication.getInstance(Application.getContext());
-        Application.getContext().registerReceiver(usbConnectivityReceiver, getIntentFilters());
     }
 
     public void setHumidity(float humidity) {
@@ -104,6 +101,11 @@ public class Plugin {
             }
         }
     };
+
+    public void initiateReader(){
+        mSerialCommunication = SerialCommunication.getInstance(Application.getContext());
+        Application.getContext().registerReceiver(usbConnectivityReceiver, getIntentFilters());
+    }
 
 
     public boolean startSerialReader () {

@@ -14,8 +14,8 @@
 
 
 ## Package integration
-- Get the latest package from [here](https://github.com/augmented-human-lab/kiwrious-android-library/packages/872446)
-- Add below code sniplets to your gradle.build file
+- Grab the latest package name and version from [here](https://github.com/augmented-human-lab/kiwrious-android-library/packages/872446)
+- Add below code sniplets to your gradle.build file and update values
 
 ```java
 implementation 'org.ahlab.kiwrious.android.kiwrious-sdk:0.0.4'

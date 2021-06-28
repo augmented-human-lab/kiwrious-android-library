@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.library'
+    id 'maven-publish'
 }
+
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 30
@@ -42,4 +45,33 @@ task copyPlugin(type: Copy){
     from ('build/outputs/aar')
     into ('../../kiwrious-unity-sdk/Assets/Plugins/Android')
     include (project.name + '-release.aar')
+}
+
+publishing {
+
+    publications {
+        bar(MavenPublication) {
+            groupId 'org.ahlab.kiwrious.android'
+            artifactId 'kiwrious-sdk'
+            version '0.0.2'
+            artifact("$buildDir/outputs/aar/$project.name-release.aar")
+
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            /** Configure path of your package repository on Github
+             *  Replace GITHUB_USERID with your/organisation Github userID and REPOSITORY with the repository name on GitHub
+             */
+            url = uri("https://maven.pkg.github.com/augmented-human-lab/kiwrious-android-library") // Github Package
+            credentials {
+                //Fetch these details from the properties file or from Environment variables
+                username = 'bsc2fast'
+                password = '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'
+            }
+        }
+    }
+
 }

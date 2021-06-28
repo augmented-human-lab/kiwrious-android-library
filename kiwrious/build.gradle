@@ -53,7 +53,7 @@ publishing {
         bar(MavenPublication) {
             groupId 'org.ahlab.kiwrious.android'
             artifactId 'kiwrious-sdk'
-            version '0.0.2'
+            version '0.0.4'
             artifact("$buildDir/outputs/aar/$project.name-release.aar")
 
         }

@@ -4,7 +4,7 @@
 - run `gradle build`
 
 ## Copy aar plugin
-- update into field value inside `copyPlugin` gradle task
+- update `into` field value inside `copyPlugin` gradle task
 - run `copyPlugin` gradle task
 
 
@@ -33,7 +33,7 @@ repositories {
 }
 ```
 
-- Create github developer token with `package read, repo` permissions
+- Create github developer token with `package read` , `repo` permissions
 - Replace GITHUB_USER and GITHUB_TOKEN with github developer token and username  
 
 

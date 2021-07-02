@@ -84,18 +84,19 @@ public class SensorDecoder {
         return value.toString().trim();
     }
 
-    public void decodeUV(Integer... mValues) {
+    public String decodeUV(Integer... mValues) {
 
-        String message;
+        StringBuilder message = new StringBuilder();
         long H;
         long L;
 
-        for (int i = 0; i < mValues.length; i++) {
+        for (int i = 0; i < 2; i++) {
 
             H = mValues[i * 2 + 1];
             L = mValues[i * 2];
-            message = String.format(Locale.getDefault(), "%.2f", Float.intBitsToFloat((int) ((H << 16) | L )));
+            message.append(" ").append(String.format(Locale.getDefault(), "%.2f", Float.intBitsToFloat((int) ((H << 16) | L))));
         }
+        return message.toString().trim();
     }
 
     public void decodeHeartRate(Integer... mValues) {

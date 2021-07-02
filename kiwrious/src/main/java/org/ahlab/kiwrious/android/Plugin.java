@@ -48,6 +48,14 @@ public class Plugin {
         this.temperature = temperature;
     }
 
+    public void setLux(float lux) {
+        this.lux = lux;
+    }
+
+    public void setUv(float uv) {
+        this.uv = uv;
+    }
+
     public float getConductivity(){
         return conductivity;
     }

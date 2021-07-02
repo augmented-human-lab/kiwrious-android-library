@@ -89,7 +89,9 @@ public class QueueReader extends Thread {
                 sensorDecoder.decodeTemperature(values);
                 break;
             case SENSOR_UV:
-                sensorDecoder.decodeUV(values);
+                String[] lightValues = sensorDecoder.decodeUV(values).split("\\s+");
+                plugin.setLux(Float.parseFloat(lightValues[0]));
+                plugin.setUv(Float.parseFloat(lightValues[1]));
                 break;
             case SENSOR_VOC:
                 sensorDecoder.decodeDefaultValues(values);

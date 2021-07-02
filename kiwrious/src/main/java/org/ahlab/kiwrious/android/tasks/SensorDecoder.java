@@ -41,7 +41,7 @@ public class SensorDecoder {
         long resistance = (long) mValues[0] * mValues[1];
 
         String uSiemens = "0";
-        if (resistance != 0f) {
+        if (resistance != 0) {
             uSiemens = String.format(Locale.getDefault(), "%.2f",
                     (1 / (float) resistance) * 1000000);
         }

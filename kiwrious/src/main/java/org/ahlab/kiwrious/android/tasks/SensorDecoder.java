@@ -16,11 +16,13 @@ public class SensorDecoder {
      *   equivalentCO2    --> mValues[1]
      */
 
-    public void decodeDefaultValues(Integer... mValues) {
+    public String decodeDefaultValues(Integer... mValues) {
 
+        StringBuilder message = new StringBuilder();
         for (Integer mValue : mValues) {
-            String.format(Locale.getDefault(),"%d", mValue);
+            message.append(String.format(Locale.getDefault(),"%d", mValue)).append(" ");
         }
+        return message.toString();
     }
 
     public String decodeConductivity(Integer... mValues) {

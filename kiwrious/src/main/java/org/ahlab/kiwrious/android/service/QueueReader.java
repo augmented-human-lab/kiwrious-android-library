@@ -75,7 +75,6 @@ public class QueueReader extends Thread {
                 String[] conductivityValues = sensorDecoder.decodeConductivity(values).split("\\s+");
                 plugin.setResistance(Long.parseLong(conductivityValues[0]));
                 plugin.setConductivity(Float.parseFloat(conductivityValues[1]));
-                sensorDecoder.decodeConductivity(values);
                 break;
             case SENSOR_HEART_RATE:
                 sensorDecoder.decodeHeartRate(values);
@@ -97,7 +96,9 @@ public class QueueReader extends Thread {
                 plugin.setUv(Float.parseFloat(lightValues[1]));
                 break;
             case SENSOR_VOC:
-                sensorDecoder.decodeDefaultValues(values);
+                String[] vocValues = sensorDecoder.decodeDefaultValues(values).split("\\s+");
+                plugin.setVoc(Integer.parseInt(vocValues[0]));
+                plugin.setCo2(Integer.parseInt(vocValues[1]));
                 break;
             default:
                 break;

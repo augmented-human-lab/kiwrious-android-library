@@ -18,7 +18,8 @@ public class Plugin {
 
     private float conductivity = 1.2f;
     private long resistance = 120;
-    private float voc = 32;
+    private int voc = 32;
+    private int co2 = 32;
     private float uv = 2.0f;
     private float lux = 80;
     private float humidity = -70;
@@ -65,6 +66,14 @@ public class Plugin {
         this.resistance = resistance;
     }
 
+    public void setVoc(int voc) {
+        this.voc = voc;
+    }
+
+    public void setCo2(int co2) {
+        this.co2 = co2;
+    }
+
     public float getConductivity(){
         return conductivity;
     }
@@ -73,8 +82,12 @@ public class Plugin {
         return resistance;
     }
 
-    public float getVoc(){
+    public int getVoc(){
         return voc;
+    }
+
+    public int getCo2() {
+        return co2;
     }
 
     public float getUV(){

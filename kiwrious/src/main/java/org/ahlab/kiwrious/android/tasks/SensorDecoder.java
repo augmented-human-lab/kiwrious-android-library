@@ -25,9 +25,16 @@ public class SensorDecoder {
 
     public String decodeConductivity(Integer... mValues) {
 
+        StringBuilder message = new StringBuilder();
         long resistance = (long) mValues[0] * mValues[1];
-        float uSiemens = (1 / (float) resistance) * 1000000;
-        return (String.format(Locale.getDefault(), "%.2f", uSiemens));
+
+        String uSiemens = "0";
+        if (resistance != 0f) {
+            uSiemens = String.format(Locale.getDefault(), "%.2f",
+                    (1 / (float) resistance) * 1000000);
+        }
+
+        return (message.append(resistance).append(" ").append(uSiemens)).toString() ;
     }
 
     public String decodeHumidity(Integer... mValues) {

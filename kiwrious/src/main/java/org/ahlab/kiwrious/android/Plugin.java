@@ -17,6 +17,7 @@ public class Plugin {
     private static Plugin instance;
 
     private float conductivity = 1.2f;
+    private long resistance = 120;
     private float voc = 32;
     private float uv = 2.0f;
     private float lux = 80;
@@ -56,8 +57,20 @@ public class Plugin {
         this.uv = uv;
     }
 
+    public void setConductivity(float conductivity) {
+        this.conductivity = conductivity;
+    }
+
+    public void setResistance(long resistance) {
+        this.resistance = resistance;
+    }
+
     public float getConductivity(){
         return conductivity;
+    }
+
+    public long getResistance() {
+        return resistance;
     }
 
     public float getVoc(){

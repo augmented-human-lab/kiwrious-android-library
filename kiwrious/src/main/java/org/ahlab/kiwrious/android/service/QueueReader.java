@@ -72,6 +72,9 @@ public class QueueReader extends Thread {
     private void decode(Integer... values) {
         switch (values[KIWRIOUS_SENSOR_TYPE]) {
             case SENSOR_CONDUCTIVITY:
+                String[] conductivityValues = sensorDecoder.decodeConductivity(values).split("\\s+");
+                plugin.setResistance(Long.parseLong(conductivityValues[0]));
+                plugin.setConductivity(Float.parseFloat(conductivityValues[1]));
                 sensorDecoder.decodeConductivity(values);
                 break;
             case SENSOR_HEART_RATE:

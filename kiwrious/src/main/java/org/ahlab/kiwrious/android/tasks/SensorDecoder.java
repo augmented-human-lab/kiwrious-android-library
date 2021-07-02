@@ -39,8 +39,7 @@ public class SensorDecoder {
 
     public String decodeHumidity(Integer... mValues) {
 
-        StringBuilder value = new StringBuilder();
-        String message;
+        StringBuilder message = new StringBuilder();
         int hundreds;
         int tens;
         int units;
@@ -54,41 +53,39 @@ public class SensorDecoder {
             units = 0;
             decimals = 0;
             data = mValues[i];
-            message = "";
 
             if (data >= 10000) {
                 hundreds = data / 10000;
                 data -= hundreds * 10000;
-                message += Integer.toString(hundreds);
+                message.append(hundreds);
             }
 
             if (data >= 1000) {
                 tens = data / 1000;
                 data -= tens * 1000;
-                message += Integer.toString(tens);
+                message.append(tens);
             } else if (hundreds > 0) {
-                message += tens;
+                message.append(tens);
             }
 
             if (data >= 100) {
                 units = data / 100;
                 data -= units * 100;
-                message += Integer.toString(units);
+                message.append(units);
             } else if (tens > 0) {
-                message += units;
+                message.append(units);
             }
 
             if (data >= 10) {
                 decimals = data / 10;
                 data -= decimals * 10;
             }
-            message += "." + decimals;
+            message.append(".").append(decimals);
 
             cents = data;
-            message += Integer.toString(cents);
-            value.append(" ").append(message);
+            message.append(cents).append(" ");
         }
-        return value.toString().trim();
+        return message.toString().trim();
     }
 
     public String decodeUV(Integer... mValues) {
@@ -101,7 +98,8 @@ public class SensorDecoder {
 
             H = mValues[i * 2 + 1];
             L = mValues[i * 2];
-            message.append(" ").append(String.format(Locale.getDefault(), "%.2f", Float.intBitsToFloat((int) ((H << 16) | L))));
+            message.append(" ").append(String.format(Locale.getDefault(), "%.2f",
+                    Float.intBitsToFloat((int) ((H << 16) | L))));
         }
         return message.toString().trim();
     }

@@ -5,15 +5,25 @@ import java.util.Locale;
 public class SensorDecoder {
 
     /**
-     * COLOUR:
-     *   red      --> mValues[0]
-     *   green    --> mValues[1]
-     *   blue     --> mValues[2]
-     *   white    --> mValues[3]
+     * Conductivity:
+     * 	    Resistance (Ohm) = mValues[0] * mValues[1]
      *
-     * VOC:
-     *   temperatureVOC   --> mValues[0]
-     *   equivalentCO2    --> mValues[1]
+     * 	Humidity
+     * 		Temperature (C) = mValues[0] / 100
+     * 		Humidity (%)	= mValues[1] / 100
+     *
+     * 	VoC
+     * 		tVOC (ppb)		= mValues[0]
+     * 		CO2eq(ppm)		= mValues[1]
+     * 	Colour
+     * 		Red				= mValues[0]
+     * 		Green			= mValues[1]
+     * 		Blue			= mValues[2]
+     * 		White			= mValues[3]
+     *
+     * 	UV and Light
+     * 		Lux				= (float) (mValues[0] + (mValues[1] << 8))
+     * 		UV				= (float) (mValues[2] + (mValues[3] << 8))
      */
 
     public String decodeDefaultValues(Integer... mValues) {
@@ -22,7 +32,7 @@ public class SensorDecoder {
         for (Integer mValue : mValues) {
             message.append(String.format(Locale.getDefault(),"%d", mValue)).append(" ");
         }
-        return message.toString();
+        return message.toString().trim();
     }
 
     public String decodeConductivity(Integer... mValues) {
@@ -36,7 +46,7 @@ public class SensorDecoder {
                     (1 / (float) resistance) * 1000000);
         }
 
-        return (message.append(resistance).append(" ").append(uSiemens)).toString() ;
+        return (message.append(resistance).append(" ").append(uSiemens)).toString().trim();
     }
 
     public String decodeHumidity(Integer... mValues) {

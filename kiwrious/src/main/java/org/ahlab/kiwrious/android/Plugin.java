@@ -101,6 +101,22 @@ public class Plugin {
         return temperature;
     }
 
+    public boolean isHumidityOnline() {
+        return isHumidityOnline;
+    }
+
+    public boolean isUvOnline() {
+        return isUvOnline;
+    }
+
+    public boolean isConductivityOnline() {
+        return isConductivityOnline;
+    }
+
+    public boolean isVocOnline() {
+        return isVocOnline;
+    }
+
     public static Plugin getInstance() {
         if (instance == null) {
             instance = new Plugin();
@@ -115,6 +131,9 @@ public class Plugin {
             if (action.equals(Constants.ACTION_FTDI_SUCCESS)) {
                 setOnlineSensor(getConnectedSensorName());
                 initiateThreads();
+            }
+            else if (action.equals(Constants.ACTION_FTDI_FAIL)) {
+                isHumidityOnline = isVocOnline = isUvOnline = isConductivityOnline = false;
             }
         }
     };
@@ -164,19 +183,15 @@ public class Plugin {
         switch (deviceName) {
             case (Constants.KIWRIOUS_CONDUCTIVITY):
                 isConductivityOnline = true;
-                isVocOnline = isUvOnline = isHumidityOnline = false;
                 break;
             case (Constants.KIWRIOUS_HUMIDITY):
                 isHumidityOnline = true;
-                isVocOnline = isUvOnline = isConductivityOnline = false;
                 break;
             case (Constants.KIWRIOUS_UV):
                 isUvOnline = true;
-                isVocOnline = isConductivityOnline = isHumidityOnline = false;
                 break;
             case (Constants.KIWRIOUS_VOC):
                 isVocOnline = true;
-                isConductivityOnline = isUvOnline = isHumidityOnline = false;
                 break;
             default:
                 break;
@@ -186,6 +201,7 @@ public class Plugin {
     private IntentFilter getIntentFilters() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Constants.ACTION_FTDI_SUCCESS);
+        intentFilter.addAction(Constants.ACTION_FTDI_FAIL);
 
         return intentFilter;
     }

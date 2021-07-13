@@ -72,7 +72,7 @@ public class QueueReader extends Thread {
     private void decode(Integer... values) {
         switch (values[KIWRIOUS_SENSOR_TYPE]) {
             case SENSOR_CONDUCTIVITY:
-                String[] conductivityValues = sensorDecoder.decodeConductivity(values).split("\\s+");
+                String[] conductivityValues = sensorDecoder.decodeConductivity(values);
                 plugin.setResistance(Long.parseLong(conductivityValues[0]));
                 plugin.setConductivity(Float.parseFloat(conductivityValues[1]));
                 break;
@@ -80,7 +80,7 @@ public class QueueReader extends Thread {
                 sensorDecoder.decodeHeartRate(values);
                 break;
             case SENSOR_HUMIDITY:
-                String[] humidityValues = sensorDecoder.decodeHumidity(values).split("\\s+");
+                String[] humidityValues = sensorDecoder.decodeHumidity(values);
                 plugin.setTemperature(Float.parseFloat(humidityValues[0]));
                 plugin.setHumidity(Float.parseFloat(humidityValues[1]));
                 break;
@@ -91,12 +91,12 @@ public class QueueReader extends Thread {
                 sensorDecoder.decodeTemperature(values);
                 break;
             case SENSOR_UV:
-                String[] lightValues = sensorDecoder.decodeUV(values).split("\\s+");
+                String[] lightValues = sensorDecoder.decodeUV(values);
                 plugin.setLux(Float.parseFloat(lightValues[0]));
                 plugin.setUv(Float.parseFloat(lightValues[1]));
                 break;
             case SENSOR_VOC:
-                String[] vocValues = sensorDecoder.decodeDefaultValues(values).split("\\s+");
+                String[] vocValues = sensorDecoder.decodeDefaultValues(values);
                 plugin.setVoc(Integer.parseInt(vocValues[0]));
                 plugin.setCo2(Integer.parseInt(vocValues[1]));
                 break;

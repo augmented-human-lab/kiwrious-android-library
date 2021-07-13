@@ -26,18 +26,18 @@ public class SensorDecoder {
      * 		UV				= (float) (mValues[2] + (mValues[3] << 8))
      */
 
-    public String decodeDefaultValues(Integer... mValues) {
+    public String[] decodeDefaultValues(Integer... mValues) {
 
-        StringBuilder message = new StringBuilder();
-        for (Integer mValue : mValues) {
-            message.append(String.format(Locale.getDefault(),"%d", mValue)).append(" ");
+        String[] defaultValues = new String[mValues.length];
+        for (int i = 0; i < mValues.length; i++) {
+            defaultValues[i] = String.format(Locale.getDefault(),"%d", mValues[i]);
         }
-        return message.toString().trim();
+        return defaultValues;
     }
 
-    public String decodeConductivity(Integer... mValues) {
+    public String[] decodeConductivity(Integer... mValues) {
 
-        StringBuilder message = new StringBuilder();
+        String[] conductivityValues = new String[2];
         long resistance = (long) mValues[0] * mValues[1];
 
         String uSiemens = "0";
@@ -46,11 +46,15 @@ public class SensorDecoder {
                     (1 / (float) resistance) * 1000000);
         }
 
-        return (message.append(resistance).append(" ").append(uSiemens)).toString().trim();
+        conductivityValues[0] = String.valueOf(resistance);
+        conductivityValues[1] = uSiemens;
+
+        return conductivityValues;
     }
 
-    public String decodeHumidity(Integer... mValues) {
+    public String[] decodeHumidity(Integer... mValues) {
 
+        String[] humidityValues = new String[2];
         StringBuilder message = new StringBuilder();
         int hundreds;
         int tens;
@@ -95,14 +99,17 @@ public class SensorDecoder {
             message.append(".").append(decimals);
 
             cents = data;
-            message.append(cents).append(" ");
+            message.append(cents);
+
+            humidityValues[i] = message.toString();
+            message.setLength(0);
         }
-        return message.toString().trim();
+        return humidityValues;
     }
 
-    public String decodeUV(Integer... mValues) {
+    public String[] decodeUV(Integer... mValues) {
 
-        StringBuilder message = new StringBuilder();
+        String[] lightValues = new String[2];
         long H;
         long L;
 
@@ -110,10 +117,10 @@ public class SensorDecoder {
 
             H = mValues[i * 2 + 1];
             L = mValues[i * 2];
-            message.append(" ").append(String.format(Locale.getDefault(), "%.2f",
-                    Float.intBitsToFloat((int) ((H << 16) | L))));
+            lightValues[i] = String.format(Locale.getDefault(), "%.2f",
+                    Float.intBitsToFloat((int) ((H << 16) | L)));
         }
-        return message.toString().trim();
+        return lightValues;
     }
 
     public void decodeHeartRate(Integer... mValues) {

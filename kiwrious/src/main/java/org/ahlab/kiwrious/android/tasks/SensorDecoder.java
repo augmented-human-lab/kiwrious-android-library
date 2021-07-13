@@ -6,31 +6,31 @@ public class SensorDecoder {
 
     /**
      * Conductivity:
-     * 	    Resistance (Ohm) = mValues[0] * mValues[1]
-     *
-     * 	Humidity
-     * 		Temperature (C) = mValues[0] / 100
-     * 		Humidity (%)	= mValues[1] / 100
-     *
-     * 	VoC
-     * 		tVOC (ppb)		= mValues[0]
-     * 		CO2eq(ppm)		= mValues[1]
-     * 	Colour
-     * 		Red				= mValues[0]
-     * 		Green			= mValues[1]
-     * 		Blue			= mValues[2]
-     * 		White			= mValues[3]
-     *
-     * 	UV and Light
-     * 		Lux				= (float) (mValues[0] + (mValues[1] << 8))
-     * 		UV				= (float) (mValues[2] + (mValues[3] << 8))
+     * Resistance (Ohm) = mValues[0] * mValues[1]
+     * <p>
+     * Humidity
+     * Temperature (C) = mValues[0] / 100
+     * Humidity (%)	= mValues[1] / 100
+     * <p>
+     * VoC
+     * tVOC (ppb)		= mValues[0]
+     * CO2eq(ppm)		= mValues[1]
+     * Colour
+     * Red				= mValues[0]
+     * Green			= mValues[1]
+     * Blue			= mValues[2]
+     * White			= mValues[3]
+     * <p>
+     * UV and Light
+     * Lux				= (float) (mValues[0] + (mValues[1] << 8))
+     * UV				= (float) (mValues[2] + (mValues[3] << 8))
      */
 
     public String[] decodeDefaultValues(Integer... mValues) {
 
         String[] defaultValues = new String[mValues.length];
         for (int i = 0; i < mValues.length; i++) {
-            defaultValues[i] = String.format(Locale.getDefault(),"%d", mValues[i]);
+            defaultValues[i] = String.format(Locale.getDefault(), "%d", mValues[i]);
         }
         return defaultValues;
     }

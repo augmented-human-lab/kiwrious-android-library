@@ -35,7 +35,7 @@ public class ServiceBlockingQueue {
         return isServiceActive;
     }
 
-    public void destroyQueueExtractor () {
+    public void destroyQueueExtractor() {
         instance = null;
     }
 }

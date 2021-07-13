@@ -33,7 +33,7 @@ public class QueueReader extends Thread {
 
     private final Plugin plugin;
 
-    public QueueReader (Plugin plugin) {
+    public QueueReader(Plugin plugin) {
         this.isRunning = true;
         this.plugin = plugin;
 
@@ -56,8 +56,8 @@ public class QueueReader extends Thread {
                 System.arraycopy(aux, 0, eData, 0, eData.length);
                 Object[] boxedStream = Arrays.stream(eData).boxed().toArray();
                 Integer[] publishArray = new Integer[KIWRIOUS_SERIAL_FRAME_SIZE_RX];
-                for(int i = 0 ; i<KIWRIOUS_SERIAL_FRAME_SIZE_RX; i++){
-                    publishArray[i] = (int)boxedStream[i];
+                for (int i = 0; i < KIWRIOUS_SERIAL_FRAME_SIZE_RX; i++) {
+                    publishArray[i] = (int) boxedStream[i];
                 }
                 decode(publishArray);
 

@@ -577,13 +577,13 @@ public class SerialCommunication extends Activity implements SerialInterface {
                     intent.setAction(Constants.ACTION_FTDI_SUCCESS);
                     context.sendBroadcast(intent);
 
-                    Toast.makeText(context, "Dongle Setup Success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Sensor Setup Success", Toast.LENGTH_SHORT).show();
                     Log.w("serialCommunication", "------------------ FTDI Initialization Success --------------------");
 
                     startCommunications();
                 } else {
 
-                    Toast.makeText(context, "Dongle Setup Fail", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Sensor Setup Fail", Toast.LENGTH_SHORT).show();
                     Log.w("serialCommunication", "------------------ FTDI Initialization Failed ---------------------");
                 }
             } else {

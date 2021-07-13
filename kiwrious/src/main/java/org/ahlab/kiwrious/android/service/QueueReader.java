@@ -33,7 +33,7 @@ public class QueueReader extends Thread {
 
     private final Plugin plugin;
 
-    public QueueReader (Plugin plugin) {
+    public QueueReader(Plugin plugin) {
         this.isRunning = true;
         this.plugin = plugin;
 
@@ -56,8 +56,8 @@ public class QueueReader extends Thread {
                 System.arraycopy(aux, 0, eData, 0, eData.length);
                 Object[] boxedStream = Arrays.stream(eData).boxed().toArray();
                 Integer[] publishArray = new Integer[KIWRIOUS_SERIAL_FRAME_SIZE_RX];
-                for(int i = 0 ; i<KIWRIOUS_SERIAL_FRAME_SIZE_RX; i++){
-                    publishArray[i] = (int)boxedStream[i];
+                for (int i = 0; i < KIWRIOUS_SERIAL_FRAME_SIZE_RX; i++) {
+                    publishArray[i] = (int) boxedStream[i];
                 }
                 decode(publishArray);
 
@@ -72,13 +72,15 @@ public class QueueReader extends Thread {
     private void decode(Integer... values) {
         switch (values[KIWRIOUS_SENSOR_TYPE]) {
             case SENSOR_CONDUCTIVITY:
-                sensorDecoder.decodeConductivity(values);
+                String[] conductivityValues = sensorDecoder.decodeConductivity(values);
+                plugin.setResistance(Long.parseLong(conductivityValues[0]));
+                plugin.setConductivity(Float.parseFloat(conductivityValues[1]));
                 break;
             case SENSOR_HEART_RATE:
                 sensorDecoder.decodeHeartRate(values);
                 break;
             case SENSOR_HUMIDITY:
-                String[] humidityValues = sensorDecoder.decodeHumidity(values).split("\\s+");
+                String[] humidityValues = sensorDecoder.decodeHumidity(values);
                 plugin.setTemperature(Float.parseFloat(humidityValues[0]));
                 plugin.setHumidity(Float.parseFloat(humidityValues[1]));
                 break;
@@ -89,10 +91,14 @@ public class QueueReader extends Thread {
                 sensorDecoder.decodeTemperature(values);
                 break;
             case SENSOR_UV:
-                sensorDecoder.decodeUV(values);
+                String[] lightValues = sensorDecoder.decodeUV(values);
+                plugin.setLux(Float.parseFloat(lightValues[0]));
+                plugin.setUv(Float.parseFloat(lightValues[1]));
                 break;
             case SENSOR_VOC:
-                sensorDecoder.decodeDefaultValues(values);
+                String[] vocValues = sensorDecoder.decodeDefaultValues(values);
+                plugin.setVoc(Integer.parseInt(vocValues[0]));
+                plugin.setCo2(Integer.parseInt(vocValues[1]));
                 break;
             default:
                 break;

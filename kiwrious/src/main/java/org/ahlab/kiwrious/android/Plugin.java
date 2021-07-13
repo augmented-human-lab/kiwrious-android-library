@@ -17,27 +17,24 @@ public class Plugin {
     private static Plugin instance;
 
     private float conductivity = 1.2f;
-    private float voc = 32;
+    private long resistance = 120;
+    private int voc = 32;
+    private int co2 = 32;
     private float uv = 2.0f;
     private float lux = 80;
     private float humidity = -70;
     private float temperature = -30;
-    private float color_h = 102;
-    private float color_s = 102;
-    private float color_v = 103;
 
-    private boolean conductivity_online = false;
-    private boolean voc_online = false;
-    private boolean uv_lux_online = false;
-    private boolean humidity_temperature_online = false;
-    private boolean color_online = false;
-
+    private boolean isConductivityOnline = false;
+    private boolean isVocOnline = false;
+    private boolean isUvOnline = false;
+    private boolean isHumidityOnline = false;
 
     private SerialCommunication mSerialCommunication;
     QueueWriter queueWriter;
     QueueReader queueReader;
 
-    private Plugin () {
+    private Plugin() {
     }
 
     public void setHumidity(float humidity) {
@@ -48,43 +45,79 @@ public class Plugin {
         this.temperature = temperature;
     }
 
-    public float getConductivity(){
+    public void setLux(float lux) {
+        this.lux = lux;
+    }
+
+    public void setUv(float uv) {
+        this.uv = uv;
+    }
+
+    public void setConductivity(float conductivity) {
+        this.conductivity = conductivity;
+    }
+
+    public void setResistance(long resistance) {
+        this.resistance = resistance;
+    }
+
+    public void setVoc(int voc) {
+        this.voc = voc;
+    }
+
+    public void setCo2(int co2) {
+        this.co2 = co2;
+    }
+
+    public float getConductivity() {
         return conductivity;
     }
 
-    public float getVoc(){
+    public long getResistance() {
+        return resistance;
+    }
+
+    public int getVoc() {
         return voc;
     }
 
-    public float getUV(){
+    public int getCo2() {
+        return co2;
+    }
+
+    public float getUV() {
         return uv;
     }
 
-    public float getLux(){
+    public float getLux() {
         return lux;
     }
 
-    public float getHumidity(){
+    public float getHumidity() {
         return humidity;
     }
 
-    public float getTemperature(){
+    public float getTemperature() {
         return temperature;
     }
 
-    public float getColorH(){
-        return color_h;
+    public boolean isHumidityOnline() {
+        return isHumidityOnline;
     }
 
-    public float getColorS(){
-        return color_s;
+    public boolean isUvOnline() {
+        return isUvOnline;
     }
 
-    public float getColorV(){
-        return color_v;
+    public boolean isConductivityOnline() {
+        return isConductivityOnline;
     }
 
-    public static Plugin getInstance () {
+    public boolean isVocOnline() {
+        return isVocOnline;
+    }
+
+    public static Plugin getInstance() {
         if (instance == null) {
             instance = new Plugin();
         }
@@ -99,16 +132,19 @@ public class Plugin {
                 setOnlineSensor(getConnectedSensorName());
                 initiateThreads();
             }
+            else if (action.equals(Constants.ACTION_FTDI_FAIL)) {
+                isHumidityOnline = isVocOnline = isUvOnline = isConductivityOnline = false;
+            }
         }
     };
 
-    public void initiateReader(){
+    public void initiateReader() {
         mSerialCommunication = SerialCommunication.getInstance(Application.getContext());
         Application.getContext().registerReceiver(usbConnectivityReceiver, getIntentFilters());
     }
 
 
-    public boolean startSerialReader () {
+    public boolean startSerialReader() {
         if (mSerialCommunication.isActive() && !isThreadsAlive()) {
             setOnlineSensor(getConnectedSensorName());
             initiateThreads();
@@ -117,7 +153,7 @@ public class Plugin {
         return false;
     }
 
-    public String getConnectedSensorName () {
+    public String getConnectedSensorName() {
         return mSerialCommunication.getDeviceProductName();
     }
 
@@ -125,7 +161,7 @@ public class Plugin {
         mSerialCommunication.stopSerialCommunications();
     }
 
-    private void initiateThreads () {
+    private void initiateThreads() {
         ServiceBlockingQueue.enableQueue();
         QueueExtractor.enableQueue();
 
@@ -136,7 +172,7 @@ public class Plugin {
         queueReader.start();
     }
 
-    private boolean isThreadsAlive () {
+    private boolean isThreadsAlive() {
         if (!(queueReader == null || queueWriter == null)) {
             return queueReader.isAlive() || queueWriter.isAlive();
         }
@@ -146,34 +182,26 @@ public class Plugin {
     private void setOnlineSensor(String deviceName) {
         switch (deviceName) {
             case (Constants.KIWRIOUS_CONDUCTIVITY):
-                conductivity_online = true;
-                voc_online = uv_lux_online = humidity_temperature_online = color_online = false;
+                isConductivityOnline = true;
                 break;
             case (Constants.KIWRIOUS_HUMIDITY):
-                humidity_temperature_online = true;
-                voc_online = uv_lux_online = conductivity_online = color_online = false;
+                isHumidityOnline = true;
                 break;
             case (Constants.KIWRIOUS_UV):
-                uv_lux_online = true;
-                voc_online = conductivity_online = humidity_temperature_online = color_online = false;
-                break;
-            case (Constants.KIWRIOUS_COLOUR):
-                color_online = true;
-                voc_online = uv_lux_online = humidity_temperature_online = conductivity_online = false;
+                isUvOnline = true;
                 break;
             case (Constants.KIWRIOUS_VOC):
-                voc_online = true;
-                conductivity_online = uv_lux_online = humidity_temperature_online = color_online = false;
+                isVocOnline = true;
                 break;
             default:
                 break;
         }
     }
 
-    private IntentFilter getIntentFilters()
-    {
+    private IntentFilter getIntentFilters() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Constants.ACTION_FTDI_SUCCESS);
+        intentFilter.addAction(Constants.ACTION_FTDI_FAIL);
 
         return intentFilter;
     }

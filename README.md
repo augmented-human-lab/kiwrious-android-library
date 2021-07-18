@@ -52,7 +52,7 @@ plugin.startSerialReader();
 plugin.startSerialReader();
 ```
 
-### Read methods
+### Sensor value get methods
 ```java
 float getConductivity()
 long getResistance()
@@ -62,6 +62,14 @@ float getUV()
 float getLux()
 float getHumidity()
 float getTemperature()
+```
+
+### Sensor status get methods
+```java
+boolean isHumidityOnline()
+boolean isUvOnline()
+boolean isConductivityOnline()
+boolean isVocOnline()
 ```
 
 ### Get Connected Sensor Name

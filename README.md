@@ -37,11 +37,37 @@ repositories {
 - Replace GITHUB_USER and GITHUB_TOKEN with github developer token and username  
 
 
-## Kiwrious reader usage
+# Kiwrious reader usage
+
+### Start Reader
 ```java
 new Application(getApplicationContext());
 Plugin plugin = Plugin.getInstance();
 plugin.initiateReader();
 plugin.startSerialReader();
 ```
+
+### Stop Reader
+```java
+plugin.startSerialReader();
+```
+
+### Read methods
+```java
+float getConductivity()
+long getResistance()
+int getVoc()
+int getCo2()
+float getUV()
+float getLux()
+float getHumidity()
+float getTemperature()
+```
+
+### Get Connected Sensor Name
+```java
+string getConnectedSensorName()
+```
+
+
 

@@ -12,6 +12,9 @@
 - Add github credentials
 - run `gradle publish`
 
+## AAR integration
+- grab the latest aar plugin from below directory and configure gradle
+https://github.com/augmented-human-lab/kiwrious-android-library/tree/master/kiwrious/build/outputs/aar
 
 ## Package integration
 - Grab the latest package name and version from [here](https://github.com/augmented-human-lab/kiwrious-android-library/packages/872446)

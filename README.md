@@ -66,7 +66,7 @@ float getTemperature()
 
 ### Get Connected Sensor Name
 ```java
-string getConnectedSensorName()
+String getConnectedSensorName()
 ```
 
 

@@ -42,6 +42,16 @@ repositories {
 
 # Kiwrious reader usage
 
+### Modify AndroidManifest.xml
+```xml
+<intent-filter>
+   <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+</intent-filter>
+<meta-data
+    android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+    android:resource="@xml/device_filter" />
+```
+
 ### Import packages
 ```java
 import org.ahlab.kiwrious.android.Application;

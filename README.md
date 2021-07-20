@@ -42,7 +42,7 @@ repositories {
 
 # Kiwrious reader usage
 
-### import packages
+### Import packages
 ```java
 import org.ahlab.kiwrious.android.Application;
 import org.ahlab.kiwrious.android.Plugin;
@@ -61,7 +61,7 @@ plugin.startSerialReader();
 plugin.startSerialReader();
 ```
 
-### Sensor value get methods
+### Get Sensor value
 ```java
 float getConductivity()
 long getResistance()
@@ -73,7 +73,7 @@ float getHumidity()
 float getTemperature()
 ```
 
-### Sensor status get methods
+### Get Sensor status
 ```java
 boolean isHumidityOnline()
 boolean isUvOnline()
@@ -81,7 +81,7 @@ boolean isConductivityOnline()
 boolean isVocOnline()
 ```
 
-### Get Connected Sensor Name
+### Get Connected Sensor
 ```java
 String getConnectedSensorName()
 ```

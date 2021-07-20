@@ -50,9 +50,8 @@ import org.ahlab.kiwrious.android.Plugin;
 
 ### Start Reader
 ```java
-new Application(getApplicationContext());
-Plugin plugin = Plugin.getInstance();
-plugin.initiateReader();
+Context context = getApplicationContext(); // get your application context
+Plugin plugin = Plugin.getInstance(context); // pass it to kiwrious library
 plugin.startSerialReader();
 ```
 

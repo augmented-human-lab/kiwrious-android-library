@@ -21,7 +21,7 @@ https://github.com/augmented-human-lab/kiwrious-android-library/tree/master/kiwr
 - Add below code sniplets to your gradle.build file and update values
 
 ```java
-implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.7'
+implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.8'
 ```
 
 ```java

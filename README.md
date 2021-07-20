@@ -61,7 +61,7 @@ plugin.startSerialReader();
 
 ### Stop Reader
 ```java
-plugin.startSerialReader();
+plugin.stopSerialReader();
 ```
 
 ### Get Sensor value

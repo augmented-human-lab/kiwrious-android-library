@@ -48,11 +48,14 @@ import org.ahlab.kiwrious.android.Application;
 import org.ahlab.kiwrious.android.Plugin;
 import android.content.Context;
 ```
-
-### Start Reader
+### Initiate Reader
 ```java
 Context context = getApplicationContext(); // get your application context
 Plugin plugin = Plugin.getInstance(context); // pass it to kiwrious library
+```
+
+### Start Reader
+```java
 plugin.startSerialReader();
 ```
 

@@ -42,6 +42,12 @@ repositories {
 
 # Kiwrious reader usage
 
+### import packages
+```java
+import org.ahlab.kiwrious.android.Application;
+import org.ahlab.kiwrious.android.Plugin;
+```
+
 ### Start Reader
 ```java
 new Application(getApplicationContext());

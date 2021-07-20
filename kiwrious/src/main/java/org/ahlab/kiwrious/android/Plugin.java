@@ -117,6 +117,13 @@ public class Plugin {
         return isVocOnline;
     }
 
+    public static Plugin getInstance(Context context) {
+        if (instance == null) {
+            new Application(context);
+            instance = new Plugin();
+        }
+        return instance;
+    }
     public static Plugin getInstance() {
         if (instance == null) {
             instance = new Plugin();
@@ -145,6 +152,7 @@ public class Plugin {
 
 
     public boolean startSerialReader() {
+        initiateReader();
         if (mSerialCommunication.isActive() && !isThreadsAlive()) {
             setOnlineSensor(getConnectedSensorName());
             initiateThreads();

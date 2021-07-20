@@ -53,7 +53,7 @@ publishing {
         bar(MavenPublication) {
             groupId 'org.ahlab.kiwrious.android'
             artifactId 'kiwrious-sdk'
-            version '0.0.6'
+            version '0.0.7'
             artifact("$buildDir/outputs/aar/$project.name-release.aar")
 
         }
@@ -69,7 +69,7 @@ publishing {
             credentials {
                 //Fetch these details from the properties file or from Environment variables
                 username = 'bsc2fast'
-                password = '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'
+                password = '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'
             }
         }
     }

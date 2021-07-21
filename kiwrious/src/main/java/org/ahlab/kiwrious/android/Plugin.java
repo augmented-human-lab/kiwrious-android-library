@@ -124,6 +124,7 @@ public class Plugin {
         }
         return instance;
     }
+
     public static Plugin getInstance() {
         if (instance == null) {
             instance = new Plugin();
@@ -138,14 +139,14 @@ public class Plugin {
             if (action.equals(Constants.ACTION_FTDI_SUCCESS)) {
                 setOnlineSensor(getConnectedSensorName());
                 initiateThreads();
-            }
-            else if (action.equals(Constants.ACTION_FTDI_FAIL)) {
+            } else if (action.equals(Constants.ACTION_FTDI_FAIL)) {
                 isHumidityOnline = isVocOnline = isUvOnline = isConductivityOnline = false;
             }
         }
     };
 
     public void initiateReader() {
+        SerialCommunication.clearInstance();
         mSerialCommunication = SerialCommunication.getInstance(Application.getContext());
         Application.getContext().registerReceiver(usbConnectivityReceiver, getIntentFilters());
     }

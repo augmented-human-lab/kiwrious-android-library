@@ -12,16 +12,16 @@
 - Add github credentials
 - run `gradle publish`
 
-## AAR integration
+## AAR integration (not recommended, see below option)
 - grab the latest aar plugin from below directory and configure gradle
 https://github.com/augmented-human-lab/kiwrious-android-library/tree/master/kiwrious/build/outputs/aar
 
-## Package integration
+## Package integration (recommended)
 - Grab the latest package name and version from [here](https://github.com/augmented-human-lab/kiwrious-android-library/packages/872446)
 - Add below code sniplets to your gradle.build file and update values
 
 ```java
-implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.7'
+implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.8'
 ```
 
 ```java
@@ -42,6 +42,16 @@ repositories {
 
 # Kiwrious reader usage
 
+### Modify AndroidManifest.xml
+```xml
+<intent-filter>
+   <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+</intent-filter>
+<meta-data
+    android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+    android:resource="@xml/device_filter" />
+```
+
 ### Import packages
 ```java
 import org.ahlab.kiwrious.android.Application;
@@ -61,7 +71,7 @@ plugin.startSerialReader();
 
 ### Stop Reader
 ```java
-plugin.startSerialReader();
+plugin.stopSerialReader();
 ```
 
 ### Get Sensor value

@@ -68,8 +68,8 @@ publishing {
             url = uri("https://maven.pkg.github.com/augmented-human-lab/kiwrious-android-library") // Github Package
             credentials {
                 //Fetch these details from the properties file or from Environment variables
-                username = 'bsc2fast'
-                password = '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'
+                username = 'bsc2fast'uses-permission
+                password = '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'
             }
         }
     }

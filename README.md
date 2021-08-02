@@ -16,8 +16,8 @@
 - Grab the latest package name and version from [here](https://github.com/augmented-human-lab/kiwrious-android-library/packages/872446)
 - Create `github.properties` file in your project root folder and add below values into `github.properties` file
 ```java 
-gpr.usr=GITHUB)USERNAME_HERE
-gpr.key=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
+gpr.usr=GITHUB_USER
+gpr.key=GITHUB_TOKEN
 ```
 - Create github developer token with `package read` , `repo` permissions
 - Replace `GITHUB_USER` and `GITHUB_TOKEN` with github username and developer token

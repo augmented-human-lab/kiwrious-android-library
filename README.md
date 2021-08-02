@@ -25,7 +25,17 @@ gpr.key=GITHUB_TOKEN
 - Add/Merge below code sniplets to your gradle.build file and update values
 
 ```java
-implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.8'
+android {
+   defaultConfig {
+      minSdkVersion 26
+   }
+}
+```
+
+```java
+dependencies {
+   implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.8'
+}
 ```
 
 ```java

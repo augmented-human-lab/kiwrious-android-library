@@ -134,6 +134,10 @@ public class SerialCommunication extends Activity implements SerialInterface {
         return instance;
     }
 
+    public static void clearInstance(){
+        instance = null;
+    }
+
     public boolean isActive () {
         return mFTDIDriver.isConnected();
     }

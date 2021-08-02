@@ -59,12 +59,20 @@ repositories {
 
 ### Modify AndroidManifest.xml
 ```xml
-<intent-filter>
-   <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-</intent-filter>
-<meta-data
-    android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-    android:resource="@xml/device_filter" />
+<manifest>
+   <application>
+      <activity>
+         <intent-filter>
+            <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+         </intent-filter>
+         <meta-data
+             android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+             android:resource="@xml/device_filter" />
+      </activity>
+   </application>
+</manifest>
+
+
 ```
 
 ### Import packages

@@ -69,7 +69,6 @@ repositories {
 
 ### Import packages
 ```java
-import org.ahlab.kiwrious.android.Application;
 import org.ahlab.kiwrious.android.Plugin;
 import android.content.Context;
 ```

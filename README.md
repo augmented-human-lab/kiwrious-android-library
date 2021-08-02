@@ -10,7 +10,7 @@
 
 ## Package publishing
 - Add github credentials
-- Increment version code inside `publications' gradle block
+- Increment version code inside `publications` gradle block
 - Run `gradle publish`
 
 ## Package integration

@@ -10,7 +10,8 @@
 
 ## Package publishing
 - Add github credentials
-- run `gradle publish`
+- Increment version code inside `publications' gradle block
+- Run `gradle publish`
 
 ## Package integration
 - Grab the latest package name and version from [here](https://github.com/augmented-human-lab/kiwrious-android-library/packages/872446)

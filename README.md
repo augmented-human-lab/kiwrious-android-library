@@ -62,9 +62,11 @@ repositories {
 <manifest>
    <application>
       <activity>
+         <!-- add new intent filter -->
          <intent-filter>
             <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
          </intent-filter>
+         <!-- add new meta data -->
          <meta-data
              android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
              android:resource="@xml/device_filter" />

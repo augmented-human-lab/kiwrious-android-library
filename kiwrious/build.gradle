@@ -47,13 +47,16 @@ task copyPlugin(type: Copy){
     include (project.name + '-release.aar')
 }
 
+def githubProperties = new Properties()
+githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+
 publishing {
 
     publications {
         bar(MavenPublication) {
             groupId 'org.ahlab.kiwrious.android'
             artifactId 'kiwrious-sdk'
-            version '0.0.8'
+            version '0.0.14'
             artifact("$buildDir/outputs/aar/$project.name-release.aar")
 
         }
@@ -62,14 +65,10 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            /** Configure path of your package repository on Github
-             *  Replace GITHUB_USERID with your/organisation Github userID and REPOSITORY with the repository name on GitHub
-             */
-            url = uri("https://maven.pkg.github.com/augmented-human-lab/kiwrious-android-library") // Github Package
+            url = uri("https://maven.pkg.github.com/augmented-human-lab/kiwrious-android-library")
             credentials {
-                //Fetch these details from the properties file or from Environment variables
-                username = 'bsc2fast'
-                password = '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'
+                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
             }
         }
     }

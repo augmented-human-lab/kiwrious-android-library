@@ -35,7 +35,7 @@ android {
 
 ```java
 dependencies {
-   implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.13'
+   implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.18'
 }
 ```
 

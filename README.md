@@ -20,6 +20,7 @@
 gpr.usr=GITHUB_USER
 gpr.key=GITHUB_TOKEN
 ```
+- Make sure `github.properties` file is added to gitIgnore
 - Create github developer token with `package read` , `repo` permissions
 - Replace `GITHUB_USER` and `GITHUB_TOKEN` with github username and developer token
 - Add/Merge below code sniplets to your gradle.build file and update values
@@ -34,12 +35,13 @@ android {
 
 ```java
 dependencies {
-   implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.8'
+   implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.13'
 }
 ```
 
 ```java
-new File('github.properties').withInputStream {new Properties().load(it)}
+def githubProperties = new Properties()
+githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
 ```
 
 ```java
@@ -48,8 +50,8 @@ repositories {
        name = "GitHubPackages"
        url = "https://maven.pkg.github.com/augmented-human-lab/kiwrious-android-library"
        credentials {
-           username = properties['gpr.usr'] ?: System.getenv("GPR_USER")
-           password = properties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+           username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+           password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
        }
    }
 }

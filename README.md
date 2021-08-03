@@ -10,51 +10,77 @@
 
 ## Package publishing
 - Add github credentials
-- run `gradle publish`
+- Increment version code inside `publications` gradle block
+- Run `gradle publish`
 
-## AAR integration (not recommended, see below option)
-- grab the latest aar plugin from below directory and configure gradle
-https://github.com/augmented-human-lab/kiwrious-android-library/tree/master/kiwrious/build/outputs/aar
-
-## Package integration (recommended)
+## Package integration
 - Grab the latest package name and version from [here](https://github.com/augmented-human-lab/kiwrious-android-library/packages/872446)
-- Add below code sniplets to your gradle.build file and update values
+- Create `github.properties` file in your project root folder and add below values into `github.properties` file
+```java 
+gpr.usr=GITHUB_USER
+gpr.key=GITHUB_TOKEN
+```
+- Make sure `github.properties` file is added to gitIgnore
+- Create github developer token with `package read` , `repo` permissions
+- Replace `GITHUB_USER` and `GITHUB_TOKEN` with github username and developer token
+- Add/Merge below code sniplets to your gradle.build file and update values
 
 ```java
-implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.8'
+android {
+   defaultConfig {
+      minSdkVersion 26
+   }
+}
+```
+
+```java
+dependencies {
+   implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.13'
+}
+```
+
+```java
+def githubProperties = new Properties()
+githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
 ```
 
 ```java
 repositories {
    maven {
+       name = "GitHubPackages"
        url = "https://maven.pkg.github.com/augmented-human-lab/kiwrious-android-library"
        credentials {
-           username = GITHUB_USER
-           password = GITHUB_TOKEN
+           username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+           password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
        }
    }
 }
 ```
 
-- Create github developer token with `package read` , `repo` permissions
-- Replace GITHUB_USER and GITHUB_TOKEN with github developer token and username  
-
-
 # Kiwrious reader usage
 
 ### Modify AndroidManifest.xml
 ```xml
-<intent-filter>
-   <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-</intent-filter>
-<meta-data
-    android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-    android:resource="@xml/device_filter" />
+<manifest>
+   <application>
+      <activity>
+         <!-- add new intent filter -->
+         <intent-filter>
+            <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+         </intent-filter>
+         <!-- add new meta data -->
+         <meta-data
+             android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+             android:resource="@xml/device_filter" />
+      </activity>
+   </application>
+</manifest>
+
+
 ```
 
 ### Import packages
 ```java
-import org.ahlab.kiwrious.android.Application;
 import org.ahlab.kiwrious.android.Plugin;
 import android.content.Context;
 ```

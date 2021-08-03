@@ -1,11 +1,11 @@
 # Kiwrious Android Library Project
 
 ## Library development
-- run `gradle build`
+- Run `gradle build`
 
 ## Copy aar plugin
-- update `into` field value inside `copyPlugin` gradle task
-- run `copyPlugin` gradle task
+- Update `into` field value inside `copyPlugin` gradle task
+- Run `copyPlugin` gradle task
 
 
 ## Package publishing

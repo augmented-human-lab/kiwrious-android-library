@@ -1,15 +1,22 @@
 # Kiwrious Android Library Project
 
 ## Library development
-- run `gradle build`
+- Run `gradle build`
 
 ## Copy aar plugin
-- update `into` field value inside `copyPlugin` gradle task
-- run `copyPlugin` gradle task
+- Update `into` field value inside `copyPlugin` gradle task
+- Run `copyPlugin` gradle task
 
 
 ## Package publishing
-- Add github credentials
+- Create `github.properties` file in your project root folder and add below values into `github.properties` file
+```java 
+gpr.usr=GITHUB_USER
+gpr.key=GITHUB_TOKEN
+```
+- Make sure `github.properties` file is added to gitIgnore
+- Create github developer token with `package write` , `repo` permissions
+- Replace `GITHUB_USER` and `GITHUB_TOKEN` with github username and developer token
 - Increment version code inside `publications` gradle block
 - Run `gradle publish`
 
@@ -35,7 +42,7 @@ android {
 
 ```java
 dependencies {
-   implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.13'
+   implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.18'
 }
 ```
 

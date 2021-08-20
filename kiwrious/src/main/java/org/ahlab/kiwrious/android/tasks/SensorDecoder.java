@@ -1,5 +1,7 @@
 package org.ahlab.kiwrious.android.tasks;
 
+import android.util.Log;
+
 import java.util.Locale;
 
 public class SensorDecoder {
@@ -131,7 +133,33 @@ public class SensorDecoder {
         //TODO: Implement Sound Processing
     }
 
-    public void decodeTemperature(Integer... mValues) {
-        //TODO: Implement Temperature Processing
+    public String[] decodeTemperature(Integer... mValues) {
+
+        String[] temperatureValues = new String[2];
+        temperatureValues[0] = "41";
+        temperatureValues[1] = "42";
+
+        // serial decode part here...
+
+        for(int y=0; y< mValues.length; y++){
+            Log.i("sankha", mValues[y]+"");
+        }
+        return temperatureValues;
+
+    }
+
+    public String[] decodeTemperature2(Integer... mValues) {
+
+        String[] temperatureValues = new String[2];
+        temperatureValues[0] = "31";
+        temperatureValues[1] = "32";
+
+        // serial decode part here...
+
+        for(int y=0; y< mValues.length; y++){
+            Log.i("sankha", mValues[y]+"");
+        }
+        return temperatureValues;
+
     }
 }

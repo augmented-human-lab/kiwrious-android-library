@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
 import org.ahlab.kiwrious.android.serial.QueueExtractor;
@@ -16,34 +17,36 @@ public class Plugin {
 
     private static Plugin instance;
 
-    private float conductivity = 1.2f;
-    private long resistance = 120;
-    private int voc = 32;
-    private int co2 = 32;
-    private float uv = 2.0f;
-    private float lux = 80;
+    private float conductivity = -1.2f;
+    private long resistance = -120;
+    private int voc = -32;
+    private int co2 = -32;
+    private float uv = -2.0f;
+    private float lux = -80;
     private float humidity = -70;
     private float temperature = -30;
+    private int ambientTemperature = -31;
+    private int infraredTemperature = -32;
 
     private boolean isConductivityOnline = false;
     private boolean isVocOnline = false;
     private boolean isUvOnline = false;
     private boolean isHumidityOnline = false;
+    private boolean isBodyTempOnline = false;
 
     private SerialCommunication mSerialCommunication;
     QueueWriter queueWriter;
     QueueReader queueReader;
 
-    private Plugin() {
-    }
+    private Plugin() {}
+
+    //    ---------------------------------------------------------------------------------------------------------------
 
     public void setHumidity(float humidity) {
         this.humidity = humidity;
     }
 
-    public void setTemperature(float temperature) {
-        this.temperature = temperature;
-    }
+    public void setTemperature(float temperature) { this.temperature = temperature; }
 
     public void setLux(float lux) {
         this.lux = lux;
@@ -68,6 +71,12 @@ public class Plugin {
     public void setCo2(int co2) {
         this.co2 = co2;
     }
+
+    public void setAmbientTemperature(int ambientTemperature) { this.ambientTemperature = ambientTemperature; }
+
+    public void setInfraredTemperature(int infraredTemperature){ this.infraredTemperature = infraredTemperature; }
+
+//    ---------------------------------------------------------------------------------------------------------------
 
     public float getConductivity() {
         return conductivity;
@@ -101,6 +110,12 @@ public class Plugin {
         return temperature;
     }
 
+    public int getAmbientTemperature() {return ambientTemperature;}
+
+    public int getInfraredTemperature() {return infraredTemperature;}
+
+    //    ---------------------------------------------------------------------------------------------------------------
+
     public boolean isHumidityOnline() {
         return isHumidityOnline;
     }
@@ -116,6 +131,10 @@ public class Plugin {
     public boolean isVocOnline() {
         return isVocOnline;
     }
+
+    public boolean isBodyTempOnline() {return isBodyTempOnline; }
+
+    //    ---------------------------------------------------------------------------------------------------------------
 
     public static Plugin getInstance(Context context) {
         if (instance == null) {
@@ -140,7 +159,7 @@ public class Plugin {
                 setOnlineSensor(getConnectedSensorName());
                 initiateThreads();
             } else if (action.equals(Constants.ACTION_FTDI_FAIL)) {
-                isHumidityOnline = isVocOnline = isUvOnline = isConductivityOnline = false;
+                isHumidityOnline = isVocOnline = isUvOnline = isConductivityOnline = isBodyTempOnline = false;
             }
         }
     };
@@ -189,6 +208,7 @@ public class Plugin {
     }
 
     private void setOnlineSensor(String deviceName) {
+        Log.i("sankha online sensor", deviceName);
         switch (deviceName) {
             case (Constants.KIWRIOUS_CONDUCTIVITY):
                 isConductivityOnline = true;
@@ -202,6 +222,8 @@ public class Plugin {
             case (Constants.KIWRIOUS_VOC):
                 isVocOnline = true;
                 break;
+            case (Constants.KIWRIOUS_TEMPERATURE):
+                isBodyTempOnline = true;
             default:
                 break;
         }
@@ -211,7 +233,6 @@ public class Plugin {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Constants.ACTION_FTDI_SUCCESS);
         intentFilter.addAction(Constants.ACTION_FTDI_FAIL);
-
         return intentFilter;
     }
 }

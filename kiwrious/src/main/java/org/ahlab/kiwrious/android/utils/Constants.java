@@ -1,5 +1,7 @@
 package org.ahlab.kiwrious.android.utils;
 
+import java.net.PortUnreachableException;
+
 public class Constants {
     public static final int SERVICE_ID = 1;
     public static final String NOTIFICATION_CHANNEL_ID = "KiwriousMonitor";
@@ -34,4 +36,5 @@ public class Constants {
     public static final int SENSOR_TEMPERATURE = 5;
     public static final int SENSOR_UV = 6;
     public static final int SENSOR_VOC = 7;
+    public static final int SENSOR_TEMPERATURE2 = 8;
 }

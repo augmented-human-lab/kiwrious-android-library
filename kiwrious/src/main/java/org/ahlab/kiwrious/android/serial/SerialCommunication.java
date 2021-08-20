@@ -28,6 +28,7 @@ import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_HEART_RATE;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_HUMIDITY;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_SOUND;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_TEMPERATURE;
+import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_TEMPERATURE2;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_UV;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_VOC;
 
@@ -77,11 +78,12 @@ public class SerialCommunication extends Activity implements SerialInterface {
     final static public int SENSOR_TYPE_UV_LIGHT		= 		1;	// UV and light
     final static public int SENSOR_TYPE_BODY_TEMP		= 		2;	// Body temperature and ambient temperature
     final static public int SENSOR_TYPE_COLOUR			= 		3;	// R G B
-    final static public int SENSOR_TYPE_CONDUCTIVITY    = 		4;	// Resistance
+    final static public int SENSOR_TYPE_CONDUCTIVITY    = 		4;	// Conductance, Resistance
     final static public int SENSOR_TYPE_HEART_RATE		= 		5;	// Heart rate
     final static public int SENSOR_TYPE_VOC				= 		6;	// VOC
-    final static public int SENSOR_TYPE_HUMIDITY		= 		7;
-    final static public int SENSOR_TYPE_SOUND			= 		8;
+    final static public int SENSOR_TYPE_HUMIDITY		= 		7;  // Humidity, Temperature
+    final static public int SENSOR_TYPE_SOUND			= 		8;  // Sound
+    final static public int SENSOR_TYPE_BODY_TEMP2		= 		9;	// Body temperature and ambient temperature
 
 
     private SerialCommunication (Context context) {
@@ -328,6 +330,7 @@ public class SerialCommunication extends Activity implements SerialInterface {
                             case 11://Read Footer B
                                 if (mSerialBuffer[i] == 0x0B) {
                                     if (_packetTypeL == SENSOR_TYPE_COLOUR) {
+                                        Log.w("serialCommunication", "SENSOR_TYPE_COLOUR");
                                         mSerialFrameOmRx [0] = _dataSensor[0];
                                         mSerialFrameOmRx [1] = _dataSensor[1];
                                         mSerialFrameOmRx [2] = _dataSensor[2];
@@ -336,6 +339,7 @@ public class SerialCommunication extends Activity implements SerialInterface {
                                         blockingQueueRxWrite(mSerialFrameOmRx);
                                     }
                                     if (_packetTypeL == SENSOR_TYPE_CONDUCTIVITY) {
+                                        Log.w("serialCommunication", "SENSOR_TYPE_CONDUCTIVITY");
                                         mSerialFrameOmRx [0] = _dataSensor[0];
                                         mSerialFrameOmRx [1] = _dataSensor[1];
                                         mSerialFrameOmRx [KIWRIOUS_SENSOR_TYPE] = SENSOR_CONDUCTIVITY;
@@ -343,10 +347,19 @@ public class SerialCommunication extends Activity implements SerialInterface {
                                     }
                                     if (_packetTypeL == SENSOR_TYPE_HEART_RATE) {
                                         Log.w("serialCommunication", "SENSOR_TYPE_HEART_RATE");
+                                        mSerialFrameOmRx [0] = _dataSensor[0];
+                                        mSerialFrameOmRx [1] = _dataSensor[1];
+                                        mSerialFrameOmRx [2] = _dataSensor[2];
+                                        mSerialFrameOmRx [3] = _dataSensor[3];
+                                        mSerialFrameOmRx [4] = _dataSensor[4];
+                                        mSerialFrameOmRx [5] = _dataSensor[5];
+                                        mSerialFrameOmRx [6] = _dataSensor[6];
+                                        mSerialFrameOmRx [7] = _dataSensor[7];
                                         mSerialFrameOmRx [KIWRIOUS_SENSOR_TYPE] = SENSOR_HEART_RATE;
                                         blockingQueueRxWrite(mSerialFrameOmRx);
                                     }
                                     if (_packetTypeL == SENSOR_TYPE_HUMIDITY) {
+                                        Log.w("serialCommunication", "SENSOR_TYPE_HUMIDITY");
                                         mSerialFrameOmRx [0] = _dataSensor[0];
                                         mSerialFrameOmRx [1] = _dataSensor[1];
                                         mSerialFrameOmRx [KIWRIOUS_SENSOR_TYPE] = SENSOR_HUMIDITY;
@@ -357,12 +370,24 @@ public class SerialCommunication extends Activity implements SerialInterface {
                                         mSerialFrameOmRx [KIWRIOUS_SENSOR_TYPE] = SENSOR_SOUND;
                                         blockingQueueRxWrite(mSerialFrameOmRx);
                                     }
-                                    if (_packetTypeL == SENSOR_TYPE_BODY_TEMP) {
-                                        Log.w("serialCommunication", "SENSOR_TYPE_BODY_TEMP");
+                                    if (_packetTypeL == SENSOR_TYPE_BODY_TEMP2) {
+                                        Log.w("serialCommunication", "SENSOR_TYPE_BODY_TEMP2");
+                                        mSerialFrameOmRx [0] = _dataSensor[0];
+                                        mSerialFrameOmRx [1] = _dataSensor[1];
                                         mSerialFrameOmRx [KIWRIOUS_SENSOR_TYPE] = SENSOR_TEMPERATURE;
                                         blockingQueueRxWrite(mSerialFrameOmRx);
                                     }
+                                    if (_packetTypeL == SENSOR_TYPE_BODY_TEMP) {
+                                        Log.w("serialCommunication", "SENSOR_TYPE_BODY_TEMP");
+                                        mSerialFrameOmRx [0] = _dataSensor[0];
+                                        mSerialFrameOmRx [1] = _dataSensor[1];
+                                        mSerialFrameOmRx [2] = _dataSensor[2];
+                                        mSerialFrameOmRx [3] = _dataSensor[3];
+                                        mSerialFrameOmRx [KIWRIOUS_SENSOR_TYPE] = SENSOR_TEMPERATURE2;
+                                        blockingQueueRxWrite(mSerialFrameOmRx);
+                                    }
                                     if (_packetTypeL == SENSOR_TYPE_UV_LIGHT) {
+                                        Log.w("serialCommunication", "SENSOR_TYPE_UV_LIGHT");
                                         mSerialFrameOmRx [0] = _dataSensor[0];
                                         mSerialFrameOmRx [1] = _dataSensor[1];
                                         mSerialFrameOmRx [2] = _dataSensor[2];
@@ -371,6 +396,7 @@ public class SerialCommunication extends Activity implements SerialInterface {
                                         blockingQueueRxWrite(mSerialFrameOmRx);
                                     }
                                     if (_packetTypeL == SENSOR_TYPE_VOC) {
+                                        Log.w("serialCommunication", "SENSOR_TYPE_VOC");
                                         mSerialFrameOmRx [0] = _dataSensor[0];
                                         mSerialFrameOmRx [1] = _dataSensor[1];
                                         mSerialFrameOmRx [KIWRIOUS_SENSOR_TYPE] = SENSOR_VOC;

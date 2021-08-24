@@ -27,12 +27,15 @@ public class Plugin {
     private float temperature = -30;
     private int ambientTemperature = -31;
     private int infraredTemperature = -32;
+    private int heartRate = -72;
 
     private boolean isConductivityOnline = false;
     private boolean isVocOnline = false;
     private boolean isUvOnline = false;
     private boolean isHumidityOnline = false;
     private boolean isBodyTempOnline = false;
+    private boolean isHeartRateOnline = false;
+    private boolean isColorOnline = false;
 
     private SerialCommunication mSerialCommunication;
     QueueWriter queueWriter;
@@ -65,6 +68,7 @@ public class Plugin {
     }
 
     public void setVoc(int voc) {
+        Log.i("sankha voc", voc +"");
         this.voc = voc;
     }
 
@@ -76,11 +80,11 @@ public class Plugin {
 
     public void setInfraredTemperature(int infraredTemperature){ this.infraredTemperature = infraredTemperature; }
 
+    public void setHeartRate(int heartRate){ this.heartRate = heartRate; }
+
 //    ---------------------------------------------------------------------------------------------------------------
 
-    public float getConductivity() {
-        return conductivity;
-    }
+    public float getConductivity() { return conductivity; }
 
     public long getResistance() {
         return resistance;
@@ -114,25 +118,25 @@ public class Plugin {
 
     public int getInfraredTemperature() {return infraredTemperature;}
 
+    public int getHeartRate() {return  heartRate;}
+
     //    ---------------------------------------------------------------------------------------------------------------
 
     public boolean isHumidityOnline() {
         return isHumidityOnline;
     }
 
-    public boolean isUvOnline() {
-        return isUvOnline;
-    }
+    public boolean isUvOnline() { return isUvOnline; }
 
-    public boolean isConductivityOnline() {
-        return isConductivityOnline;
-    }
+    public boolean isConductivityOnline() { return isConductivityOnline; }
 
-    public boolean isVocOnline() {
-        return isVocOnline;
-    }
+    public boolean isVocOnline() { return isVocOnline; }
 
     public boolean isBodyTempOnline() {return isBodyTempOnline; }
+
+    public boolean isHeartRateOnline() {return isHeartRateOnline; }
+
+    public boolean isColorOnline() {return isColorOnline;}
 
     //    ---------------------------------------------------------------------------------------------------------------
 
@@ -154,13 +158,13 @@ public class Plugin {
     private final BroadcastReceiver usbConnectivityReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(Constants.ACTION_FTDI_SUCCESS)) {
-                setOnlineSensor(getConnectedSensorName());
-                initiateThreads();
-            } else if (action.equals(Constants.ACTION_FTDI_FAIL)) {
-                isHumidityOnline = isVocOnline = isUvOnline = isConductivityOnline = isBodyTempOnline = false;
-            }
+        String action = intent.getAction();
+        if (action.equals(Constants.ACTION_FTDI_SUCCESS)) {
+            setOnlineSensor(getConnectedSensorName());
+            initiateThreads();
+        } else if (action.equals(Constants.ACTION_FTDI_FAIL)) {
+            isHumidityOnline = isVocOnline = isUvOnline = isConductivityOnline = isBodyTempOnline = isHeartRateOnline = isColorOnline = false;
+        }
         }
     };
 
@@ -208,7 +212,7 @@ public class Plugin {
     }
 
     private void setOnlineSensor(String deviceName) {
-        Log.i("sankha online sensor", deviceName);
+        Log.i("sankha device name", deviceName );
         switch (deviceName) {
             case (Constants.KIWRIOUS_CONDUCTIVITY):
                 isConductivityOnline = true;
@@ -224,6 +228,13 @@ public class Plugin {
                 break;
             case (Constants.KIWRIOUS_TEMPERATURE):
                 isBodyTempOnline = true;
+                break;
+            case (Constants.KIWRIOUS_HEART_RATE):
+                isHeartRateOnline = true;
+                break;
+            case (Constants.KIWRIOUS_COLOUR):
+                isColorOnline = true;
+                break;
             default:
                 break;
         }

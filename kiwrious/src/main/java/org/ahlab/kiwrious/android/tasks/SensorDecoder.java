@@ -37,6 +37,14 @@ public class SensorDecoder {
         return defaultValues;
     }
 
+    public String[] decodeVOC(Integer... mValues){
+        String[] vocValues = new String[2];
+        vocValues[0] = String.format(Locale.getDefault(), "%d", mValues[0]);
+        vocValues[1] = String.format(Locale.getDefault(), "%d", mValues[1]);
+        Log.i("sankha voc ",vocValues[0] + " " + vocValues[1]);
+        return  vocValues;
+    }
+
     public String[] decodeConductivity(Integer... mValues) {
 
         String[] conductivityValues = new String[2];
@@ -125,8 +133,10 @@ public class SensorDecoder {
         return lightValues;
     }
 
-    public void decodeHeartRate(Integer... mValues) {
-        //TODO: Implement Heart Rate Processing
+    public String decodeHeartRate(Integer... mValues) {
+        String heartRateValue = "72";
+        // serial decode code here...
+        return heartRateValue;
     }
 
     public void decodeSound(Integer... mValues) {
@@ -136,14 +146,11 @@ public class SensorDecoder {
     public String[] decodeTemperature(Integer... mValues) {
 
         String[] temperatureValues = new String[2];
-        temperatureValues[0] = "41";
-        temperatureValues[1] = "42";
+        temperatureValues[0] = (mValues[0] / 100)+""; //"41";
+        temperatureValues[1] = (mValues[1]/100 - 32)*5 / 9+"";
 
         // serial decode part here...
 
-        for(int y=0; y< mValues.length; y++){
-            Log.i("sankha", mValues[y]+"");
-        }
         return temperatureValues;
 
     }
@@ -156,9 +163,6 @@ public class SensorDecoder {
 
         // serial decode part here...
 
-        for(int y=0; y< mValues.length; y++){
-            Log.i("sankha", mValues[y]+"");
-        }
         return temperatureValues;
 
     }

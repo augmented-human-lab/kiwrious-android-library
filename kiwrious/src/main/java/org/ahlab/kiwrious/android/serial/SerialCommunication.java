@@ -304,6 +304,9 @@ public class SerialCommunication extends Activity implements SerialInterface {
                             case 7://Read Data H
                                 _dataH = (0xFF & mSerialBuffer[i]);
                                 _data = (_dataH << 8) | _dataL;
+//                                if(_dataLength - _dataLengthAux > 0 && _dataSensor.length > _dataLength - _dataLengthAux){
+//                                    _dataSensor [_dataLength - _dataLengthAux] = _data;
+//                                }
                                 _dataSensor [_dataLength - _dataLengthAux] = _data;
                                 if (--_dataLengthAux > 0) {
                                     _stateSerial = 6;

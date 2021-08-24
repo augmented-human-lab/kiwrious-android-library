@@ -72,6 +72,7 @@ public class QueueReader extends Thread {
     }
 
     private void decode(Integer... values) {
+        Log.i("sankha sensor type", values[KIWRIOUS_SENSOR_TYPE] + "");
         switch (values[KIWRIOUS_SENSOR_TYPE]) {
             case SENSOR_COLOUR:
                 // color decode
@@ -82,7 +83,8 @@ public class QueueReader extends Thread {
                 plugin.setConductivity(Float.parseFloat(conductivityValues[1]));
                 break;
             case SENSOR_HEART_RATE:
-                sensorDecoder.decodeHeartRate(values);
+                String heartRateValue = sensorDecoder.decodeHeartRate(values);
+                plugin.setHeartRate(Integer.parseInt(heartRateValue));
                 break;
             case SENSOR_HUMIDITY:
                 String[] humidityValues = sensorDecoder.decodeHumidity(values);
@@ -108,7 +110,8 @@ public class QueueReader extends Thread {
                 plugin.setUv(Float.parseFloat(lightValues[1]));
                 break;
             case SENSOR_VOC:
-                String[] vocValues = sensorDecoder.decodeDefaultValues(values);
+                Log.i("sankha", "inside voc switch, waiting for decode");
+                String[] vocValues = sensorDecoder.decodeVOC(values);
                 plugin.setVoc(Integer.parseInt(vocValues[0]));
                 plugin.setCo2(Integer.parseInt(vocValues[1]));
                 break;

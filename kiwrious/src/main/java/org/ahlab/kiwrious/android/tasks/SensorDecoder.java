@@ -34,11 +34,20 @@ public class SensorDecoder {
         return defaultValues;
     }
 
+    public String[] decodeColor(Integer... mValues){
+        // check below decode methods, values are not accurate
+        String[] colorValues = new String[3];
+        colorValues[0] = String.format(Locale.getDefault(), "%d", mValues[0] / 100);
+        colorValues[1] = String.format(Locale.getDefault(), "%d", mValues[1] / 100);
+        colorValues[2] = String.format(Locale.getDefault(), "%d", mValues[2] / 100);
+        return colorValues;
+    }
+
     public String[] decodeVOC(Integer... mValues){
         String[] vocValues = new String[2];
         vocValues[0] = String.format(Locale.getDefault(), "%d", mValues[0]);
         vocValues[1] = String.format(Locale.getDefault(), "%d", mValues[1]);
-        return  vocValues;
+        return vocValues;
     }
 
     public String[] decodeConductivity(Integer... mValues) {

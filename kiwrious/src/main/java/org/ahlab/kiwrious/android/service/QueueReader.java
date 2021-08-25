@@ -74,7 +74,10 @@ public class QueueReader extends Thread {
     private void decode(Integer... values) {
         switch (values[KIWRIOUS_SENSOR_TYPE]) {
             case SENSOR_COLOUR:
-                // color decode
+                String[] colorValues = sensorDecoder.decodeColor(values);
+                plugin.setR(Integer.parseInt(colorValues[0]));
+                plugin.setG(Integer.parseInt(colorValues[1]));
+                plugin.setB(Integer.parseInt(colorValues[2]));
                 break;
             case SENSOR_CONDUCTIVITY:
                 String[] conductivityValues = sensorDecoder.decodeConductivity(values);

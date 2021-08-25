@@ -21,6 +21,9 @@ public class Plugin {
     private long resistance = -120;
     private int voc = -32;
     private int co2 = -32;
+    private int r = -255;
+    private int g = -245;
+    private int b = -235;
     private float uv = -2.0f;
     private float lux = -80;
     private float humidity = -70;
@@ -69,6 +72,12 @@ public class Plugin {
 
     public void setVoc(int voc) { this.voc = voc; }
 
+    public void setR(int r) { this.r = r; }
+
+    public void setG(int g) { this.g = g; }
+
+    public void setB(int b) { this.b = b; }
+
     public void setCo2(int co2) {
         this.co2 = co2;
     }
@@ -115,7 +124,13 @@ public class Plugin {
 
     public int getInfraredTemperature() {return infraredTemperature;}
 
-    public int getHeartRate() {return  heartRate;}
+    public int getHeartRate() {return heartRate;}
+
+    public int getR() {return r;}
+
+    public int getG() {return g;}
+
+    public int getB() {return b;}
 
     //    ---------------------------------------------------------------------------------------------------------------
 

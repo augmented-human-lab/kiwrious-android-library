@@ -67,10 +67,7 @@ public class Plugin {
         this.resistance = resistance;
     }
 
-    public void setVoc(int voc) {
-        Log.i("sankha voc", voc +"");
-        this.voc = voc;
-    }
+    public void setVoc(int voc) { this.voc = voc; }
 
     public void setCo2(int co2) {
         this.co2 = co2;
@@ -212,7 +209,6 @@ public class Plugin {
     }
 
     private void setOnlineSensor(String deviceName) {
-        Log.i("sankha device name", deviceName );
         switch (deviceName) {
             case (Constants.KIWRIOUS_CONDUCTIVITY):
                 isConductivityOnline = true;

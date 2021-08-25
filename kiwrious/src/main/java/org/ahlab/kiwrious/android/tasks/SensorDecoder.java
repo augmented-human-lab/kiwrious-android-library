@@ -8,24 +8,21 @@ public class SensorDecoder {
 
     /**
      * Conductivity:
-     * Resistance (Ohm) = mValues[0] * mValues[1]
-     * <p>
+        * Resistance (Ohm) = mValues[0] * mValues[1]
      * Humidity
-     * Temperature (C) = mValues[0] / 100
-     * Humidity (%)	= mValues[1] / 100
-     * <p>
+        * Temperature (C) = mValues[0] / 100
+        * Humidity (%)	= mValues[1] / 100
      * VoC
-     * tVOC (ppb)		= mValues[0]
-     * CO2eq(ppm)		= mValues[1]
+        * tVOC (ppb)	= mValues[0]
+        * CO2eq(ppm)	= mValues[1]
      * Colour
-     * Red				= mValues[0]
-     * Green			= mValues[1]
-     * Blue			= mValues[2]
-     * White			= mValues[3]
-     * <p>
+        * Red			= mValues[0]
+        * Green			= mValues[1]
+        * Blue			= mValues[2]
+        * White			= mValues[3]
      * UV and Light
-     * Lux				= (float) (mValues[0] + (mValues[1] << 8))
-     * UV				= (float) (mValues[2] + (mValues[3] << 8))
+        * Lux			= (float) (mValues[0] + (mValues[1] << 8))
+        * UV			= (float) (mValues[2] + (mValues[3] << 8))
      */
 
     public String[] decodeDefaultValues(Integer... mValues) {
@@ -41,7 +38,6 @@ public class SensorDecoder {
         String[] vocValues = new String[2];
         vocValues[0] = String.format(Locale.getDefault(), "%d", mValues[0]);
         vocValues[1] = String.format(Locale.getDefault(), "%d", mValues[1]);
-        Log.i("sankha voc ",vocValues[0] + " " + vocValues[1]);
         return  vocValues;
     }
 
@@ -52,8 +48,7 @@ public class SensorDecoder {
 
         String uSiemens = "0";
         if (resistance != 0) {
-            uSiemens = String.format(Locale.getDefault(), "%.2f",
-                    (1 / (float) resistance) * 1000000);
+            uSiemens = String.format(Locale.getDefault(), "%.2f", (1 / (float) resistance) * 1000000);
         }
 
         conductivityValues[0] = String.valueOf(resistance);
@@ -127,8 +122,7 @@ public class SensorDecoder {
 
             H = mValues[i * 2 + 1];
             L = mValues[i * 2];
-            lightValues[i] = String.format(Locale.getDefault(), "%.2f",
-                    Float.intBitsToFloat((int) ((H << 16) | L)));
+            lightValues[i] = String.format(Locale.getDefault(), "%.2f", Float.intBitsToFloat((int) ((H << 16) | L)));
         }
         return lightValues;
     }
@@ -144,15 +138,10 @@ public class SensorDecoder {
     }
 
     public String[] decodeTemperature(Integer... mValues) {
-
         String[] temperatureValues = new String[2];
-        temperatureValues[0] = (mValues[0] / 100)+""; //"41";
-        temperatureValues[1] = (mValues[1]/100 - 32)*5 / 9+"";
-
-        // serial decode part here...
-
+        temperatureValues[0] = (mValues[0] / 100)+"";
+        temperatureValues[1] = (mValues[1]/100 - 32) * 5 / 9 + "";
         return temperatureValues;
-
     }
 
     public String[] decodeTemperature2(Integer... mValues) {

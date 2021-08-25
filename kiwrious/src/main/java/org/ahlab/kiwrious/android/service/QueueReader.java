@@ -13,11 +13,13 @@ import java.util.concurrent.TimeUnit;
 
 import static org.ahlab.kiwrious.android.utils.Constants.KIWRIOUS_SENSOR_TYPE;
 import static org.ahlab.kiwrious.android.utils.Constants.KIWRIOUS_SERIAL_FRAME_SIZE_RX;
+import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_COLOUR;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_CONDUCTIVITY;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_HEART_RATE;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_HUMIDITY;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_SOUND;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_TEMPERATURE;
+import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_TEMPERATURE2;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_UV;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_VOC;
 
@@ -71,13 +73,20 @@ public class QueueReader extends Thread {
 
     private void decode(Integer... values) {
         switch (values[KIWRIOUS_SENSOR_TYPE]) {
+            case SENSOR_COLOUR:
+                String[] colorValues = sensorDecoder.decodeColor(values);
+                plugin.setR(Integer.parseInt(colorValues[0]));
+                plugin.setG(Integer.parseInt(colorValues[1]));
+                plugin.setB(Integer.parseInt(colorValues[2]));
+                break;
             case SENSOR_CONDUCTIVITY:
                 String[] conductivityValues = sensorDecoder.decodeConductivity(values);
                 plugin.setResistance(Long.parseLong(conductivityValues[0]));
                 plugin.setConductivity(Float.parseFloat(conductivityValues[1]));
                 break;
             case SENSOR_HEART_RATE:
-                sensorDecoder.decodeHeartRate(values);
+                String heartRateValue = sensorDecoder.decodeHeartRate(values);
+                plugin.setHeartRate(Integer.parseInt(heartRateValue));
                 break;
             case SENSOR_HUMIDITY:
                 String[] humidityValues = sensorDecoder.decodeHumidity(values);
@@ -88,7 +97,14 @@ public class QueueReader extends Thread {
                 sensorDecoder.decodeSound(values);
                 break;
             case SENSOR_TEMPERATURE:
-                sensorDecoder.decodeTemperature(values);
+                String[] temperatureValues = sensorDecoder.decodeTemperature(values);
+                plugin.setAmbientTemperature(Integer.parseInt(temperatureValues[0]));
+                plugin.setInfraredTemperature(Integer.parseInt(temperatureValues[1]));
+                break;
+            case SENSOR_TEMPERATURE2:
+                String[] temperature2Values = sensorDecoder.decodeTemperature2(values);
+                plugin.setAmbientTemperature(Integer.parseInt(temperature2Values[0]));
+                plugin.setInfraredTemperature(Integer.parseInt(temperature2Values[1]));
                 break;
             case SENSOR_UV:
                 String[] lightValues = sensorDecoder.decodeUV(values);
@@ -96,7 +112,7 @@ public class QueueReader extends Thread {
                 plugin.setUv(Float.parseFloat(lightValues[1]));
                 break;
             case SENSOR_VOC:
-                String[] vocValues = sensorDecoder.decodeDefaultValues(values);
+                String[] vocValues = sensorDecoder.decodeVOC(values);
                 plugin.setVoc(Integer.parseInt(vocValues[0]));
                 plugin.setCo2(Integer.parseInt(vocValues[1]));
                 break;

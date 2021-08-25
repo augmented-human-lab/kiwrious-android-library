@@ -1,29 +1,28 @@
 package org.ahlab.kiwrious.android.tasks;
 
+import android.util.Log;
+
 import java.util.Locale;
 
 public class SensorDecoder {
 
     /**
      * Conductivity:
-     * Resistance (Ohm) = mValues[0] * mValues[1]
-     * <p>
+        * Resistance (Ohm) = mValues[0] * mValues[1]
      * Humidity
-     * Temperature (C) = mValues[0] / 100
-     * Humidity (%)	= mValues[1] / 100
-     * <p>
+        * Temperature (C) = mValues[0] / 100
+        * Humidity (%)	= mValues[1] / 100
      * VoC
-     * tVOC (ppb)		= mValues[0]
-     * CO2eq(ppm)		= mValues[1]
+        * tVOC (ppb)	= mValues[0]
+        * CO2eq(ppm)	= mValues[1]
      * Colour
-     * Red				= mValues[0]
-     * Green			= mValues[1]
-     * Blue			= mValues[2]
-     * White			= mValues[3]
-     * <p>
+        * Red			= mValues[0]
+        * Green			= mValues[1]
+        * Blue			= mValues[2]
+        * White			= mValues[3]
      * UV and Light
-     * Lux				= (float) (mValues[0] + (mValues[1] << 8))
-     * UV				= (float) (mValues[2] + (mValues[3] << 8))
+        * Lux			= (float) (mValues[0] + (mValues[1] << 8))
+        * UV			= (float) (mValues[2] + (mValues[3] << 8))
      */
 
     public String[] decodeDefaultValues(Integer... mValues) {
@@ -35,6 +34,22 @@ public class SensorDecoder {
         return defaultValues;
     }
 
+    public String[] decodeColor(Integer... mValues){
+        // check below decode methods, values are not accurate
+        String[] colorValues = new String[3];
+        colorValues[0] = String.format(Locale.getDefault(), "%d", mValues[0] / 100);
+        colorValues[1] = String.format(Locale.getDefault(), "%d", mValues[1] / 100);
+        colorValues[2] = String.format(Locale.getDefault(), "%d", mValues[2] / 100);
+        return colorValues;
+    }
+
+    public String[] decodeVOC(Integer... mValues){
+        String[] vocValues = new String[2];
+        vocValues[0] = String.format(Locale.getDefault(), "%d", mValues[0]);
+        vocValues[1] = String.format(Locale.getDefault(), "%d", mValues[1]);
+        return vocValues;
+    }
+
     public String[] decodeConductivity(Integer... mValues) {
 
         String[] conductivityValues = new String[2];
@@ -42,8 +57,7 @@ public class SensorDecoder {
 
         String uSiemens = "0";
         if (resistance != 0) {
-            uSiemens = String.format(Locale.getDefault(), "%.2f",
-                    (1 / (float) resistance) * 1000000);
+            uSiemens = String.format(Locale.getDefault(), "%.2f", (1 / (float) resistance) * 1000000);
         }
 
         conductivityValues[0] = String.valueOf(resistance);
@@ -117,21 +131,37 @@ public class SensorDecoder {
 
             H = mValues[i * 2 + 1];
             L = mValues[i * 2];
-            lightValues[i] = String.format(Locale.getDefault(), "%.2f",
-                    Float.intBitsToFloat((int) ((H << 16) | L)));
+            lightValues[i] = String.format(Locale.getDefault(), "%.2f", Float.intBitsToFloat((int) ((H << 16) | L)));
         }
         return lightValues;
     }
 
-    public void decodeHeartRate(Integer... mValues) {
-        //TODO: Implement Heart Rate Processing
+    public String decodeHeartRate(Integer... mValues) {
+        String heartRateValue = "72";
+        // serial decode code here...
+        return heartRateValue;
     }
 
     public void decodeSound(Integer... mValues) {
         //TODO: Implement Sound Processing
     }
 
-    public void decodeTemperature(Integer... mValues) {
-        //TODO: Implement Temperature Processing
+    public String[] decodeTemperature(Integer... mValues) {
+        String[] temperatureValues = new String[2];
+        temperatureValues[0] = (mValues[0] / 100)+"";
+        temperatureValues[1] = (mValues[1]/100 - 32) * 5 / 9 + "";
+        return temperatureValues;
+    }
+
+    public String[] decodeTemperature2(Integer... mValues) {
+
+        String[] temperatureValues = new String[2];
+        temperatureValues[0] = "31";
+        temperatureValues[1] = "32";
+
+        // serial decode part here...
+
+        return temperatureValues;
+
     }
 }

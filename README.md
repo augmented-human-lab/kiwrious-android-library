@@ -117,6 +117,8 @@ float getUV()
 float getLux()
 float getHumidity()
 float getTemperature()
+int getAmbientTemperature()
+int getInfraredTemperature()
 ```
 
 ### Get Sensor status
@@ -125,6 +127,7 @@ boolean isHumidityOnline()
 boolean isUvOnline()
 boolean isConductivityOnline()
 boolean isVocOnline()
+boolean isBodyTempOnline()
 ```
 
 ### Get Connected Sensor

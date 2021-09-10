@@ -2,27 +2,28 @@ package org.ahlab.kiwrious.android.tasks;
 
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 public class SensorDecoder {
 
     /**
      * Conductivity:
-        * Resistance (Ohm) = mValues[0] * mValues[1]
+     * Resistance (Ohm) = mValues[0] * mValues[1]
      * Humidity
-        * Temperature (C) = mValues[0] / 100
-        * Humidity (%)	= mValues[1] / 100
+     * Temperature (C) = mValues[0] / 100
+     * Humidity (%)	= mValues[1] / 100
      * VoC
-        * tVOC (ppb)	= mValues[0]
-        * CO2eq(ppm)	= mValues[1]
+     * tVOC (ppb)	= mValues[0]
+     * CO2eq(ppm)	= mValues[1]
      * Colour
-        * Red			= mValues[0]
-        * Green			= mValues[1]
-        * Blue			= mValues[2]
-        * White			= mValues[3]
+     * Red			= mValues[0]
+     * Green			= mValues[1]
+     * Blue			= mValues[2]
+     * White			= mValues[3]
      * UV and Light
-        * Lux			= (float) (mValues[0] + (mValues[1] << 8))
-        * UV			= (float) (mValues[2] + (mValues[3] << 8))
+     * Lux			= (float) (mValues[0] + (mValues[1] << 8))
+     * UV			= (float) (mValues[2] + (mValues[3] << 8))
      */
 
     public String[] decodeDefaultValues(Integer... mValues) {
@@ -34,7 +35,7 @@ public class SensorDecoder {
         return defaultValues;
     }
 
-    public String[] decodeColor(Integer... mValues){
+    public String[] decodeColor(Integer... mValues) {
         // check below decode methods, values are not accurate
         String[] colorValues = new String[3];
         colorValues[0] = String.format(Locale.getDefault(), "%d", mValues[0] / 100);
@@ -43,7 +44,7 @@ public class SensorDecoder {
         return colorValues;
     }
 
-    public String[] decodeVOC(Integer... mValues){
+    public String[] decodeVOC(Integer... mValues) {
         String[] vocValues = new String[2];
         vocValues[0] = String.format(Locale.getDefault(), "%d", mValues[0]);
         vocValues[1] = String.format(Locale.getDefault(), "%d", mValues[1]);
@@ -66,58 +67,16 @@ public class SensorDecoder {
         return conductivityValues;
     }
 
-    public String[] decodeHumidity(Integer... mValues) {
+    public Float[] decodeHumidity(byte[] sensorData) {
 
-        String[] humidityValues = new String[2];
-        StringBuilder message = new StringBuilder();
-        int hundreds;
-        int tens;
-        int units;
-        int decimals;
-        int cents;
-        int data;
+        Float[] humidityValues = new Float[2];
 
-        for (int i = 0; i < 2; i++) {
-            hundreds = 0;
-            tens = 0;
-            units = 0;
-            decimals = 0;
-            data = mValues[i];
+        float humidity = (sensorData[8] & 0xff | (sensorData[9] << 8)) / 100f;
+        float temperature = (sensorData[6] & 0xff | (sensorData[7] << 8)) / 100f;
 
-            if (data >= 10000) {
-                hundreds = data / 10000;
-                data -= hundreds * 10000;
-                message.append(hundreds);
-            }
+        humidityValues[0] = temperature;
+        humidityValues[1] = humidity;
 
-            if (data >= 1000) {
-                tens = data / 1000;
-                data -= tens * 1000;
-                message.append(tens);
-            } else if (hundreds > 0) {
-                message.append(tens);
-            }
-
-            if (data >= 100) {
-                units = data / 100;
-                data -= units * 100;
-                message.append(units);
-            } else if (tens > 0) {
-                message.append(units);
-            }
-
-            if (data >= 10) {
-                decimals = data / 10;
-                data -= decimals * 10;
-            }
-            message.append(".").append(decimals);
-
-            cents = data;
-            message.append(cents);
-
-            humidityValues[i] = message.toString();
-            message.setLength(0);
-        }
         return humidityValues;
     }
 
@@ -148,8 +107,8 @@ public class SensorDecoder {
 
     public String[] decodeTemperature(Integer... mValues) {
         String[] temperatureValues = new String[2];
-        temperatureValues[0] = (mValues[0] / 100)+"";
-        temperatureValues[1] = (mValues[1]/100 - 32) * 5 / 9 + "";
+        temperatureValues[0] = (mValues[0] / 100) + "";
+        temperatureValues[1] = (mValues[1] / 100 - 32) * 5 / 9 + "";
         return temperatureValues;
     }
 

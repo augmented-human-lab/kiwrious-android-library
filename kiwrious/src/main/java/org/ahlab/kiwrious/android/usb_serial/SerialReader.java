@@ -6,6 +6,8 @@ import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 
+import org.ahlab.kiwrious.android.utils.Constants;
+
 import java.util.concurrent.Callable;
 
 public class SerialReader {
@@ -36,7 +38,7 @@ public class SerialReader {
     public class Reader implements Callable<byte[]> {
 
         public byte[] call() {
-            final byte[] bytes = new byte[26];
+            final byte[] bytes = new byte[Constants.KIWRIOUS_SERIAL_FRAME_SIZE_RX];
             connection.bulkTransfer(endpoint, bytes, bytes.length, TIMEOUT);
             return bytes.clone();
         }

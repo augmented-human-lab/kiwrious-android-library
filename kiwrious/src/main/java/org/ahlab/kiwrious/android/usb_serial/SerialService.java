@@ -8,8 +8,12 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
-import java.util.Arrays;
+import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
+import org.ahlab.kiwrious.android.serial.QueueExtractor;
+import org.ahlab.kiwrious.android.utils.Constants;
+
 import java.util.HashMap;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -23,6 +27,8 @@ public class SerialService {
     private final UsbManager usbManager;
     private UsbDevice usbDevice;
 
+    private final BlockingQueue<byte[]> blockingQueueRx;
+
     private boolean isConnected;
 
     public SerialService(Context context) {
@@ -32,6 +38,9 @@ public class SerialService {
         intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         context.registerReceiver(onUsbAttachReceiver, intentFilter);
         context.registerReceiver(onUsbDetachReceiver, intentFilter);
+
+        QueueExtractor queueExtractor = QueueExtractor.getInstance();
+        blockingQueueRx = queueExtractor.getQueueRx();
 
         usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
     }
@@ -43,7 +52,15 @@ public class SerialService {
         return instance;
     }
 
-    public void initSerialManager() {
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public String getDeviceName() {
+        return usbDevice.getProductName();
+    }
+
+    public void initSerialManager(Context context) {
         if (!isConnected) {
             HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
             for (UsbDevice device : deviceList.values()) {
@@ -52,17 +69,33 @@ public class SerialService {
                 } else {
                     Log.w(TAG, "---------------------- Permission Granted -------------------------");
                     usbDevice = device;
-                    startCommunications();
+                    startCommunications(context);
                     break;
                 }
             }
         }
     }
 
-    private void startCommunications() {
+    public void stopCommunications(Context context) {
+        isConnected = false;
+
+        ServiceBlockingQueue.disableQueue();
+        QueueExtractor.disableQueue();
+
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(Constants.ACTION_FTDI_FAIL);
+        context.sendBroadcast(broadcastIntent);
+    }
+
+    private void startCommunications(Context context) {
         new Thread(() -> {
             SerialReader serialReader = new SerialReader(usbManager, usbDevice);
             isConnected = serialReader.openConnection();
+
+            QueueExtractor.enableQueue();
+            Intent intent = new Intent();
+            intent.setAction(Constants.ACTION_FTDI_SUCCESS);
+            context.sendBroadcast(intent);
 
             ExecutorService executorService = Executors.newFixedThreadPool(1);
 
@@ -70,7 +103,10 @@ public class SerialService {
                 while (isConnected) {
                     Future<byte[]> readOnce = executorService.submit(serialReader.new Reader());
                     byte[] serialData = readOnce.get();
-                    Log.w(TAG, Arrays.toString(serialData));
+                    if (blockingQueueRx != null) {
+                        boolean isCapacityAvailable = blockingQueueRx.offer(serialData);
+                        if (!isCapacityAvailable) blockingQueueRx.clear();
+                    }
                 }
             } catch (Exception e) {
                 Thread.currentThread().interrupt();
@@ -86,7 +122,7 @@ public class SerialService {
             String action = intent.getAction();
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
                 Log.w(TAG, "- - - - - - - - - - -  USB ACTION ATTACHED  - - - - - - - - - - - -");
-                initSerialManager();
+                initSerialManager(context);
             }
         }
     };
@@ -97,7 +133,7 @@ public class SerialService {
             String action = intent.getAction();
             if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 Log.w(TAG, "- - - - - - - - - - -  USB ACTION DETACHED  - - - - - - - - - - - -");
-                isConnected = false;
+                stopCommunications(context);
             }
         }
     };

@@ -66,6 +66,7 @@ public class QueueReader extends Thread {
 
     private void decode(byte[] sensorData) {
         switch (sensorData[KIWRIOUS_SENSOR_TYPE]) {
+            //TODO: complete decode calls using bye array data
             case SENSOR_COLOUR:
 //                String[] colorValues = sensorDecoder.decodeColor(values);
 //                plugin.setR(Integer.parseInt(colorValues[0]));
@@ -73,9 +74,9 @@ public class QueueReader extends Thread {
 //                plugin.setB(Integer.parseInt(colorValues[2]));
                 break;
             case SENSOR_CONDUCTIVITY:
-//                String[] conductivityValues = sensorDecoder.decodeConductivity(values);
-//                plugin.setResistance(Long.parseLong(conductivityValues[0]));
-//                plugin.setConductivity(Float.parseFloat(conductivityValues[1]));
+                String[] conductivityValues = sensorDecoder.decodeConductivity(sensorData);
+                plugin.setResistance(Long.parseLong(conductivityValues[0]));
+                plugin.setConductivity(Float.parseFloat(conductivityValues[1]));
                 break;
             case SENSOR_HEART_RATE:
 //                String heartRateValue = sensorDecoder.decodeHeartRate(values);
@@ -100,9 +101,9 @@ public class QueueReader extends Thread {
 //                plugin.setInfraredTemperature(Integer.parseInt(temperature2Values[1]));
                 break;
             case SENSOR_UV:
-//                String[] lightValues = sensorDecoder.decodeUV(values);
-//                plugin.setLux(Float.parseFloat(lightValues[0]));
-//                plugin.setUv(Float.parseFloat(lightValues[1]));
+                String[] lightValues = sensorDecoder.decodeUV(sensorData);
+                plugin.setLux(Long.parseLong(lightValues[0]));
+                plugin.setUv(Float.parseFloat(lightValues[1]));
                 break;
             case SENSOR_VOC:
 //                String[] vocValues = sensorDecoder.decodeVOC(values);

@@ -1,32 +1,13 @@
 package org.ahlab.kiwrious.android.tasks;
 
-import android.util.Log;
-
-import java.util.Arrays;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Locale;
 
 public class SensorDecoder {
 
-    /**
-     * Conductivity:
-     * Resistance (Ohm) = mValues[0] * mValues[1]
-     * Humidity
-     * Temperature (C) = mValues[0] / 100
-     * Humidity (%)	= mValues[1] / 100
-     * VoC
-     * tVOC (ppb)	= mValues[0]
-     * CO2eq(ppm)	= mValues[1]
-     * Colour
-     * Red			= mValues[0]
-     * Green			= mValues[1]
-     * Blue			= mValues[2]
-     * White			= mValues[3]
-     * UV and Light
-     * Lux			= (float) (mValues[0] + (mValues[1] << 8))
-     * UV			= (float) (mValues[2] + (mValues[3] << 8))
-     */
-
     public String[] decodeDefaultValues(Integer... mValues) {
+        //TODO: decode using byte values
 
         String[] defaultValues = new String[mValues.length];
         for (int i = 0; i < mValues.length; i++) {
@@ -36,7 +17,7 @@ public class SensorDecoder {
     }
 
     public String[] decodeColor(Integer... mValues) {
-        // check below decode methods, values are not accurate
+        //TODO: decode using byte values
         String[] colorValues = new String[3];
         colorValues[0] = String.format(Locale.getDefault(), "%d", mValues[0] / 100);
         colorValues[1] = String.format(Locale.getDefault(), "%d", mValues[1] / 100);
@@ -45,23 +26,25 @@ public class SensorDecoder {
     }
 
     public String[] decodeVOC(Integer... mValues) {
+        //TODO: decode using byte values
         String[] vocValues = new String[2];
         vocValues[0] = String.format(Locale.getDefault(), "%d", mValues[0]);
         vocValues[1] = String.format(Locale.getDefault(), "%d", mValues[1]);
         return vocValues;
     }
 
-    public String[] decodeConductivity(Integer... mValues) {
+    public String[] decodeConductivity(byte[] sensorData) {
 
         String[] conductivityValues = new String[2];
-        long resistance = (long) mValues[0] * mValues[1];
+
+        long resistance = (long) (sensorData[6] & 0xff | (sensorData[7] << 8)) * (sensorData[8] & 0xff | (sensorData[9] << 8));
 
         String uSiemens = "0";
         if (resistance != 0) {
             uSiemens = String.format(Locale.getDefault(), "%.2f", (1 / (float) resistance) * 1000000);
         }
 
-        conductivityValues[0] = String.valueOf(resistance);
+        conductivityValues[0] = Long.toString(resistance);
         conductivityValues[1] = uSiemens;
 
         return conductivityValues;
@@ -80,32 +63,31 @@ public class SensorDecoder {
         return humidityValues;
     }
 
-    public String[] decodeUV(Integer... mValues) {
+    public String[] decodeUV(byte[] sensorData) {
 
         String[] lightValues = new String[2];
-        long H;
-        long L;
 
-        for (int i = 0; i < 2; i++) {
+        float lux = ByteBuffer.wrap(sensorData, 6, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+        float uv = ByteBuffer.wrap(sensorData, 10, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 
-            H = mValues[i * 2 + 1];
-            L = mValues[i * 2];
-            lightValues[i] = String.format(Locale.getDefault(), "%.2f", Float.intBitsToFloat((int) ((H << 16) | L)));
-        }
+        lightValues[0] = String.format(Locale.getDefault(), "%.0f", lux);
+        lightValues[1] = String.format(Locale.getDefault(), "%.1f", uv);
+
         return lightValues;
     }
 
     public String decodeHeartRate(Integer... mValues) {
+        //TODO: decode using byte values
         String heartRateValue = "72";
-        // serial decode code here...
         return heartRateValue;
     }
 
     public void decodeSound(Integer... mValues) {
-        //TODO: Implement Sound Processing
+        //TODO: decode using byte values
     }
 
     public String[] decodeTemperature(Integer... mValues) {
+        //TODO: decode using byte values
         String[] temperatureValues = new String[2];
         temperatureValues[0] = (mValues[0] / 100) + "";
         temperatureValues[1] = (mValues[1] / 100 - 32) * 5 / 9 + "";
@@ -113,12 +95,10 @@ public class SensorDecoder {
     }
 
     public String[] decodeTemperature2(Integer... mValues) {
-
+        //TODO: decode using byte values
         String[] temperatureValues = new String[2];
         temperatureValues[0] = "31";
         temperatureValues[1] = "32";
-
-        // serial decode part here...
 
         return temperatureValues;
 

@@ -23,16 +23,15 @@ public class Constants {
     public static final int KIWRIOUS_SERIAL_FRAME_SIZE_TX = 16;
     public static final int KIWRIOUS_SERIAL_FRAME_SIZE_RX = 26;
 
-
     public static final int KIWRIOUS_SENSOR_TYPE = 2;
 
-    public static final int SENSOR_COLOUR = 0;
-    public static final int SENSOR_CONDUCTIVITY = 1;
-    public static final int SENSOR_HEART_RATE = 2;
+    public static final int SENSOR_UV = 1;
+    public static final int SENSOR_CONDUCTIVITY = 4;
+    public static final int SENSOR_HEART_RATE = 5;
+    public static final int SENSOR_VOC = 6;
     public static final int SENSOR_HUMIDITY = 7;
-    public static final int SENSOR_SOUND = 4;
-    public static final int SENSOR_TEMPERATURE = 5;
-    public static final int SENSOR_UV = 6;
-    public static final int SENSOR_VOC = -7;
-    public static final int SENSOR_TEMPERATURE2 = 8;
+    public static final int SENSOR_TEMPERATURE2 = 9;
+    public static final int SENSOR_COLOUR = 0;
+    public static final int SENSOR_SOUND = -1;
+    public static final int SENSOR_TEMPERATURE = -2;
 }

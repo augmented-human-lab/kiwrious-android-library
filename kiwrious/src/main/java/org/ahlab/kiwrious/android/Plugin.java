@@ -24,7 +24,7 @@ public class Plugin {
     private int g = -245;
     private int b = -235;
     private float uv = -2.0f;
-    private float lux = -80;
+    private long lux = -80;
     private float humidity = -70;
     private float temperature = -30;
     private int ambientTemperature = -31;
@@ -56,7 +56,7 @@ public class Plugin {
         this.temperature = temperature;
     }
 
-    public void setLux(float lux) {
+    public void setLux(long lux) {
         this.lux = lux;
     }
 
@@ -126,7 +126,7 @@ public class Plugin {
         return uv;
     }
 
-    public float getLux() {
+    public long getLux() {
         return lux;
     }
 

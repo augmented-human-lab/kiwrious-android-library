@@ -88,32 +88,35 @@ public class SerialService {
     }
 
     private void startCommunications(Context context) {
-        new Thread(() -> {
-            SerialReader serialReader = new SerialReader(usbManager, usbDevice);
-            isConnected = serialReader.openConnection();
+        Thread thread = new Thread(){
+            public void run(){
+                SerialReader serialReader = new SerialReader(usbManager, usbDevice);
+                isConnected = serialReader.openConnection();
 
-            QueueExtractor.enableQueue();
-            Intent intent = new Intent();
-            intent.setAction(Constants.ACTION_FTDI_SUCCESS);
-            context.sendBroadcast(intent);
+                QueueExtractor.enableQueue();
+                Intent intent = new Intent();
+                intent.setAction(Constants.ACTION_FTDI_SUCCESS);
+                context.sendBroadcast(intent);
 
-            ExecutorService executorService = Executors.newFixedThreadPool(1);
+                ExecutorService executorService = Executors.newFixedThreadPool(1);
 
-            try {
-                while (isConnected) {
-                    Future<byte[]> readOnce = executorService.submit(serialReader.new Reader());
-                    byte[] serialData = readOnce.get();
-                    if (blockingQueueRx != null) {
-                        boolean isCapacityAvailable = blockingQueueRx.offer(serialData);
-                        if (!isCapacityAvailable) blockingQueueRx.clear();
+                try {
+                    while (isConnected) {
+                        Future<byte[]> readOnce = executorService.submit(serialReader.new Reader());
+                        byte[] serialData = readOnce.get();
+                        if (blockingQueueRx != null) {
+                            boolean isCapacityAvailable = blockingQueueRx.offer(serialData);
+                            if (!isCapacityAvailable) blockingQueueRx.clear();
+                        }
                     }
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    executorService.shutdown();
                 }
-            } catch (Exception e) {
-                Thread.currentThread().interrupt();
-            } finally {
-                executorService.shutdown();
             }
-        }).start();
+        };
+        thread.start();
     }
 
     private final BroadcastReceiver onUsbAttachReceiver = new BroadcastReceiver() {

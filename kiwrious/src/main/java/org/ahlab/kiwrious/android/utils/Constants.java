@@ -31,7 +31,7 @@ public class Constants {
     public static final int SENSOR_VOC = 6;
     public static final int SENSOR_HUMIDITY = 7;
     public static final int SENSOR_TEMPERATURE2 = 9;
-    public static final int SENSOR_COLOUR = 0;
+    public static final int SENSOR_COLOUR = 3;
     public static final int SENSOR_SOUND = -1;
-    public static final int SENSOR_TEMPERATURE = -2;
+    public static final int SENSOR_TEMPERATURE = 2;
 }

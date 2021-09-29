@@ -3,7 +3,7 @@ package org.ahlab.kiwrious.android.service;
 import android.util.Log;
 
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
-import org.ahlab.kiwrious.android.serial.QueueExtractor;
+import org.ahlab.kiwrious.android.usb_serial.QueueExtractor;
 import org.ahlab.kiwrious.android.utils.Constants;
 
 import java.util.concurrent.BlockingQueue;

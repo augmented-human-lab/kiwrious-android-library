@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
-import org.ahlab.kiwrious.android.serial.QueueExtractor;
+import org.ahlab.kiwrious.android.usb_serial.QueueExtractor;
 import org.ahlab.kiwrious.android.service.QueueReader;
 import org.ahlab.kiwrious.android.service.QueueWriter;
 import org.ahlab.kiwrious.android.usb_serial.SerialService;

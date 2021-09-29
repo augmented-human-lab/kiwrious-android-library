@@ -4,7 +4,7 @@ import android.util.Log;
 
 import org.ahlab.kiwrious.android.Plugin;
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
-import org.ahlab.kiwrious.android.serial.QueueExtractor;
+import org.ahlab.kiwrious.android.usb_serial.QueueExtractor;
 import org.ahlab.kiwrious.android.tasks.SensorDecoder;
 
 import java.util.concurrent.BlockingQueue;

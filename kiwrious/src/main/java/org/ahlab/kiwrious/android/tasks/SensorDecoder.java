@@ -29,7 +29,7 @@ public class SensorDecoder {
         int co2 = (sensorData[8] & 0xff | (sensorData[7] << 8));
 
         vocValues[0] = Integer.toString(voc);
-        vocValues[1] = Integer.toString(co2);;
+        vocValues[1] = Integer.toString(co2);
 
         return vocValues;
     }
@@ -90,11 +90,11 @@ public class SensorDecoder {
     public String[] decodeTemperature(byte[] sensorData) {
         String[] temperatureValues = new String[2];
 
-        float a_temperature = ByteBuffer.wrap(sensorData, 6, 2).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100;
-        float i_temperature = ByteBuffer.wrap(sensorData, 8, 2).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100;
+        float ambientTemperature = ByteBuffer.wrap(sensorData, 6, 2).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100f;
+        float infraredTemperature = ByteBuffer.wrap(sensorData, 8, 2).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100f;
 
-        temperatureValues[0] = Float.toString(a_temperature); // (mValues[0] / 100) + "";
-        temperatureValues[1] = Float.toString(i_temperature); //(mValues[1] / 100 - 32) * 5 / 9 + "";
+        temperatureValues[0] = String.format(Locale.getDefault(), "%.1f", ambientTemperature);
+        temperatureValues[1] = String.format(Locale.getDefault(), "%.0f", infraredTemperature);
 
         return temperatureValues;
     }
@@ -102,15 +102,15 @@ public class SensorDecoder {
     public String[] decodeTemperature2(byte[] sensorData) {
         String[] temperatureValues = new String[2];
 
-        float a_temperature = ByteBuffer.wrap(sensorData, 6, 2).order(ByteOrder.LITTLE_ENDIAN).getShort() /100;// BitConverter.ToInt16(data.Skip(6).Take(2).ToArray(), 0) / 100;
-        short x = ByteBuffer.wrap(sensorData, 8, 2).order(ByteOrder.LITTLE_ENDIAN).getShort(); // BitConverter.ToUInt16(data.Skip(8).Take(2).ToArray(), 0);
-        float a = ByteBuffer.wrap(sensorData, 10, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat(); //BitConverter.ToSingle(data.Skip(10).Take(4).ToArray(), 0);
-        float b = ByteBuffer.wrap(sensorData, 14, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat(); //BitConverter.ToSingle(data.Skip(14).Take(4).ToArray(), 0);
-        float c = ByteBuffer.wrap(sensorData, 18, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat(); //BitConverter.ToSingle(data.Skip(18).Take(4).ToArray(), 0);
-        float d_temperature = (float)(Math.round(((a * Math.pow(x, 2)) / Math.pow(10, 5) + b * x + c)));
+        float ambientTemperature = ByteBuffer.wrap(sensorData, 6, 2).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100f;
+        short x = ByteBuffer.wrap(sensorData, 8, 2).order(ByteOrder.LITTLE_ENDIAN).getShort();
+        float a = ByteBuffer.wrap(sensorData, 10, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+        float b = ByteBuffer.wrap(sensorData, 14, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+        float c = ByteBuffer.wrap(sensorData, 18, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+        float dTemperature = (float) (Math.round(((a * Math.pow(x, 2)) / Math.pow(10, 5) + b * x + c)));
 
-        temperatureValues[0] = String.format(Locale.getDefault(), "%.0f", a_temperature); //Float.toString(a_temperature); // (mValues[0] / 100) + "";
-        temperatureValues[1] = String.format(Locale.getDefault(), "%.0f", d_temperature); //Float.toString(d_temperature); //(mValues[1] / 100 - 32) * 5 / 9 + "";
+        temperatureValues[0] = String.format(Locale.getDefault(), "%.0f", ambientTemperature);
+        temperatureValues[1] = String.format(Locale.getDefault(), "%.0f", dTemperature);
 
         return temperatureValues;
     }

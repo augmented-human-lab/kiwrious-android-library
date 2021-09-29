@@ -9,7 +9,6 @@ import android.hardware.usb.UsbManager;
 import android.util.Log;
 
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
-import org.ahlab.kiwrious.android.serial.QueueExtractor;
 import org.ahlab.kiwrious.android.utils.Constants;
 
 import java.util.HashMap;
@@ -88,8 +87,8 @@ public class SerialService {
     }
 
     private void startCommunications(Context context) {
-        Thread thread = new Thread(){
-            public void run(){
+        Thread thread = new Thread() {
+            public void run() {
                 SerialReader serialReader = new SerialReader(usbManager, usbDevice);
                 isConnected = serialReader.openConnection();
 

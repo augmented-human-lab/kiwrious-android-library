@@ -111,6 +111,7 @@ public class QueueReader extends Thread {
                 plugin.setCo2(Integer.parseInt(vocValues[1]));
                 break;
             default:
+                Log.e("kiwrious-plugin", "unexpected sensor type "+sensorData[KIWRIOUS_SENSOR_TYPE]);
                 break;
         }
     }

@@ -7,16 +7,19 @@ import java.util.Locale;
 public class SensorDecoder {
 
     public String[] decodeColor(byte[] sensorData) {
-        //TODO: decode using byte values
+
         String[] colorValues = new String[3];
 
-//        double r = Math.sqrt(ByteBuffer.wrap(sensorData, 6, 2).order(ByteOrder.LITTLE_ENDIAN).getShort());
-//        double g = Math.sqrt(ByteBuffer.wrap(sensorData, 8, 2).order(ByteOrder.LITTLE_ENDIAN).getShort());
-//        double b = Math.sqrt(ByteBuffer.wrap(sensorData, 10, 2).order(ByteOrder.LITTLE_ENDIAN).getShort());
-//
-//        colorValues[0] = String.format(Locale.getDefault(), "%d", r);
-//        colorValues[1] = String.format(Locale.getDefault(), "%d", g);
-//        colorValues[2] = String.format(Locale.getDefault(), "%d", b);
+        double r = Math.sqrt(ByteBuffer.wrap(sensorData, 6, 2).order(ByteOrder.LITTLE_ENDIAN).getShort());
+        double g = Math.sqrt(ByteBuffer.wrap(sensorData, 8, 2).order(ByteOrder.LITTLE_ENDIAN).getShort());
+        double b = Math.sqrt(ByteBuffer.wrap(sensorData, 10, 2).order(ByteOrder.LITTLE_ENDIAN).getShort());
+
+        float[] hsv = new float[3];
+        android.graphics.Color.RGBToHSV((int) r,(int) g, (int) b, hsv);
+
+        colorValues[0] = String.format(Locale.getDefault(), "%.0f", hsv[0]);
+        colorValues[1] = String.format(Locale.getDefault(), "%.0f", hsv[1]*100);
+        colorValues[2] = String.format(Locale.getDefault(), "%.0f", hsv[2]*100);
 
         return colorValues;
     }

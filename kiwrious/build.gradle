@@ -43,7 +43,7 @@ dependencies {
 task copyPlugin(type: Copy){
     dependsOn assemble
     from ('build/outputs/aar')
-    into ('../../kiwrious-unity-sdk/Assets/Plugins/Android')
+    into ('../../kiwrious-unity-sdk/Packages/kiwrious-unity-package/Plugins/Android')
     include (project.name + '-release.aar')
 }
 

@@ -1,167 +1,120 @@
 package org.ahlab.kiwrious.android.tasks;
 
-import android.util.Log;
-
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Locale;
 
 public class SensorDecoder {
 
-    /**
-     * Conductivity:
-        * Resistance (Ohm) = mValues[0] * mValues[1]
-     * Humidity
-        * Temperature (C) = mValues[0] / 100
-        * Humidity (%)	= mValues[1] / 100
-     * VoC
-        * tVOC (ppb)	= mValues[0]
-        * CO2eq(ppm)	= mValues[1]
-     * Colour
-        * Red			= mValues[0]
-        * Green			= mValues[1]
-        * Blue			= mValues[2]
-        * White			= mValues[3]
-     * UV and Light
-        * Lux			= (float) (mValues[0] + (mValues[1] << 8))
-        * UV			= (float) (mValues[2] + (mValues[3] << 8))
-     */
+    public String[] decodeColor(byte[] sensorData) {
 
-    public String[] decodeDefaultValues(Integer... mValues) {
-
-        String[] defaultValues = new String[mValues.length];
-        for (int i = 0; i < mValues.length; i++) {
-            defaultValues[i] = String.format(Locale.getDefault(), "%d", mValues[i]);
-        }
-        return defaultValues;
-    }
-
-    public String[] decodeColor(Integer... mValues){
-        // check below decode methods, values are not accurate
         String[] colorValues = new String[3];
-        colorValues[0] = String.format(Locale.getDefault(), "%d", mValues[0] / 100);
-        colorValues[1] = String.format(Locale.getDefault(), "%d", mValues[1] / 100);
-        colorValues[2] = String.format(Locale.getDefault(), "%d", mValues[2] / 100);
+
+        double r = Math.sqrt(ByteBuffer.wrap(sensorData, 6, 2).order(ByteOrder.LITTLE_ENDIAN).getShort());
+        double g = Math.sqrt(ByteBuffer.wrap(sensorData, 8, 2).order(ByteOrder.LITTLE_ENDIAN).getShort());
+        double b = Math.sqrt(ByteBuffer.wrap(sensorData, 10, 2).order(ByteOrder.LITTLE_ENDIAN).getShort());
+
+        float[] hsv = new float[3];
+        android.graphics.Color.RGBToHSV((int) r,(int) g, (int) b, hsv);
+
+        colorValues[0] = String.format(Locale.getDefault(), "%.0f", hsv[0]);
+        colorValues[1] = String.format(Locale.getDefault(), "%.0f", hsv[1]*100);
+        colorValues[2] = String.format(Locale.getDefault(), "%.0f", hsv[2]*100);
+
         return colorValues;
     }
 
-    public String[] decodeVOC(Integer... mValues){
+    public String[] decodeVOC(byte[] sensorData) {
+
         String[] vocValues = new String[2];
-        vocValues[0] = String.format(Locale.getDefault(), "%d", mValues[0]);
-        vocValues[1] = String.format(Locale.getDefault(), "%d", mValues[1]);
+
+        int voc = (sensorData[6] & 0xff | (sensorData[7] << 8));
+        int co2 = (sensorData[8] & 0xff | (sensorData[7] << 8));
+
+        vocValues[0] = Integer.toString(voc);
+        vocValues[1] = Integer.toString(co2);
+
         return vocValues;
     }
 
-    public String[] decodeConductivity(Integer... mValues) {
+    public String[] decodeConductivity(byte[] sensorData) {
 
         String[] conductivityValues = new String[2];
-        long resistance = (long) mValues[0] * mValues[1];
+
+        long resistance = (long) (sensorData[6] & 0xff | (sensorData[7] << 8)) * (sensorData[8] & 0xff | (sensorData[9] << 8));
 
         String uSiemens = "0";
         if (resistance != 0) {
             uSiemens = String.format(Locale.getDefault(), "%.2f", (1 / (float) resistance) * 1000000);
         }
 
-        conductivityValues[0] = String.valueOf(resistance);
+        conductivityValues[0] = Long.toString(resistance);
         conductivityValues[1] = uSiemens;
 
         return conductivityValues;
     }
 
-    public String[] decodeHumidity(Integer... mValues) {
+    public Float[] decodeHumidity(byte[] sensorData) {
 
-        String[] humidityValues = new String[2];
-        StringBuilder message = new StringBuilder();
-        int hundreds;
-        int tens;
-        int units;
-        int decimals;
-        int cents;
-        int data;
+        Float[] humidityValues = new Float[2];
 
-        for (int i = 0; i < 2; i++) {
-            hundreds = 0;
-            tens = 0;
-            units = 0;
-            decimals = 0;
-            data = mValues[i];
+        float humidity = (sensorData[8] & 0xff | (sensorData[9] << 8)) / 100f;
+        float temperature = (sensorData[6] & 0xff | (sensorData[7] << 8)) / 100f;
 
-            if (data >= 10000) {
-                hundreds = data / 10000;
-                data -= hundreds * 10000;
-                message.append(hundreds);
-            }
+        humidityValues[0] = temperature;
+        humidityValues[1] = humidity;
 
-            if (data >= 1000) {
-                tens = data / 1000;
-                data -= tens * 1000;
-                message.append(tens);
-            } else if (hundreds > 0) {
-                message.append(tens);
-            }
-
-            if (data >= 100) {
-                units = data / 100;
-                data -= units * 100;
-                message.append(units);
-            } else if (tens > 0) {
-                message.append(units);
-            }
-
-            if (data >= 10) {
-                decimals = data / 10;
-                data -= decimals * 10;
-            }
-            message.append(".").append(decimals);
-
-            cents = data;
-            message.append(cents);
-
-            humidityValues[i] = message.toString();
-            message.setLength(0);
-        }
         return humidityValues;
     }
 
-    public String[] decodeUV(Integer... mValues) {
+    public String[] decodeUV(byte[] sensorData) {
 
         String[] lightValues = new String[2];
-        long H;
-        long L;
 
-        for (int i = 0; i < 2; i++) {
+        float lux = ByteBuffer.wrap(sensorData, 6, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+        float uv = ByteBuffer.wrap(sensorData, 10, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 
-            H = mValues[i * 2 + 1];
-            L = mValues[i * 2];
-            lightValues[i] = String.format(Locale.getDefault(), "%.2f", Float.intBitsToFloat((int) ((H << 16) | L)));
-        }
+        lightValues[0] = String.format(Locale.getDefault(), "%.0f", lux);
+        lightValues[1] = String.format(Locale.getDefault(), "%.1f", uv);
+
         return lightValues;
     }
 
-    public String decodeHeartRate(Integer... mValues) {
+    public String decodeHeartRate(byte[] sensorData) {
+        //TODO: decode using byte values
         String heartRateValue = "72";
-        // serial decode code here...
         return heartRateValue;
     }
 
     public void decodeSound(Integer... mValues) {
-        //TODO: Implement Sound Processing
+        //TODO: decode using byte values
     }
 
-    public String[] decodeTemperature(Integer... mValues) {
+    public String[] decodeTemperature(byte[] sensorData) {
         String[] temperatureValues = new String[2];
-        temperatureValues[0] = (mValues[0] / 100)+"";
-        temperatureValues[1] = (mValues[1]/100 - 32) * 5 / 9 + "";
+
+        float ambientTemperature = ByteBuffer.wrap(sensorData, 6, 2).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100f;
+        float infraredTemperature = ByteBuffer.wrap(sensorData, 8, 2).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100f;
+
+        temperatureValues[0] = String.format(Locale.getDefault(), "%.1f", ambientTemperature);
+        temperatureValues[1] = String.format(Locale.getDefault(), "%.0f", infraredTemperature);
+
         return temperatureValues;
     }
 
-    public String[] decodeTemperature2(Integer... mValues) {
-
+    public String[] decodeTemperature2(byte[] sensorData) {
         String[] temperatureValues = new String[2];
-        temperatureValues[0] = "31";
-        temperatureValues[1] = "32";
 
-        // serial decode part here...
+        float ambientTemperature = ByteBuffer.wrap(sensorData, 6, 2).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100f;
+        short x = ByteBuffer.wrap(sensorData, 8, 2).order(ByteOrder.LITTLE_ENDIAN).getShort();
+        float a = ByteBuffer.wrap(sensorData, 10, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+        float b = ByteBuffer.wrap(sensorData, 14, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+        float c = ByteBuffer.wrap(sensorData, 18, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+        float dTemperature = (float) (Math.round(((a * Math.pow(x, 2)) / Math.pow(10, 5) + b * x + c)));
+
+        temperatureValues[0] = String.format(Locale.getDefault(), "%.0f", ambientTemperature);
+        temperatureValues[1] = String.format(Locale.getDefault(), "%.0f", dTemperature);
 
         return temperatureValues;
-
     }
 }

@@ -1,4 +1,4 @@
-package org.ahlab.kiwrious.android.serial;
+package org.ahlab.kiwrious.android.usb_serial;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -6,12 +6,12 @@ import java.util.concurrent.BlockingQueue;
 public class QueueExtractor {
     public static QueueExtractor instanceQueueExtractor;
     private static boolean isQueueEnabled;
-    private BlockingQueue queueRx;
+    private final BlockingQueue<byte[]> queueRx;
     private BlockingQueue queueTx;
 
 
     private QueueExtractor () {
-        queueRx = new ArrayBlockingQueue<int []>(60);
+        queueRx = new ArrayBlockingQueue<>(60);
         queueTx = new ArrayBlockingQueue<byte []>(60);
     }
 
@@ -26,7 +26,7 @@ public class QueueExtractor {
         return queueTx;
     }
 
-    public BlockingQueue getQueueRx () {
+    public BlockingQueue<byte[]> getQueueRx () {
         return queueRx;
     }
 

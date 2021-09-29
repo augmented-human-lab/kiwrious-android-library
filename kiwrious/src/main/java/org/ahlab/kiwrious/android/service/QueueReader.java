@@ -4,10 +4,9 @@ import android.util.Log;
 
 import org.ahlab.kiwrious.android.Plugin;
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
-import org.ahlab.kiwrious.android.serial.QueueExtractor;
+import org.ahlab.kiwrious.android.usb_serial.QueueExtractor;
 import org.ahlab.kiwrious.android.tasks.SensorDecoder;
 
-import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -51,18 +50,12 @@ public class QueueReader extends Thread {
     @Override
     public void run() {
         while (isRunning && QueueExtractor.getQueueStatus()) {
-            int[] eData = new int[KIWRIOUS_SERIAL_FRAME_SIZE_RX];
-            int[] aux;
+            byte[] publishArray = new byte[KIWRIOUS_SERIAL_FRAME_SIZE_RX];
+            byte[] aux;
             try {
-                aux = ServiceBlockingQueue.getServiceStatus() ? (int[]) serviceQueue.take() : (int[]) blockingQueueRx.poll(250, TimeUnit.MILLISECONDS);
-                System.arraycopy(aux, 0, eData, 0, eData.length);
-                Object[] boxedStream = Arrays.stream(eData).boxed().toArray();
-                Integer[] publishArray = new Integer[KIWRIOUS_SERIAL_FRAME_SIZE_RX];
-                for (int i = 0; i < KIWRIOUS_SERIAL_FRAME_SIZE_RX; i++) {
-                    publishArray[i] = (int) boxedStream[i];
-                }
+                aux = ServiceBlockingQueue.getServiceStatus() ? (byte[]) serviceQueue.take() : (byte[]) blockingQueueRx.poll(250, TimeUnit.MILLISECONDS);
+                System.arraycopy(aux, 0, publishArray, 0, publishArray.length);
                 decode(publishArray);
-
 
             } catch (Exception e) {
                 Log.e(TAG, "Serial Read Thread Interrupted");
@@ -71,52 +64,54 @@ public class QueueReader extends Thread {
         super.run();
     }
 
-    private void decode(Integer... values) {
-        switch (values[KIWRIOUS_SENSOR_TYPE]) {
+    private void decode(byte[] sensorData) {
+        switch (sensorData[KIWRIOUS_SENSOR_TYPE]) {
+            //TODO: complete decode calls using bye array data
             case SENSOR_COLOUR:
-                String[] colorValues = sensorDecoder.decodeColor(values);
+                String[] colorValues = sensorDecoder.decodeColor(sensorData);
                 plugin.setR(Integer.parseInt(colorValues[0]));
                 plugin.setG(Integer.parseInt(colorValues[1]));
                 plugin.setB(Integer.parseInt(colorValues[2]));
                 break;
             case SENSOR_CONDUCTIVITY:
-                String[] conductivityValues = sensorDecoder.decodeConductivity(values);
+                String[] conductivityValues = sensorDecoder.decodeConductivity(sensorData);
                 plugin.setResistance(Long.parseLong(conductivityValues[0]));
                 plugin.setConductivity(Float.parseFloat(conductivityValues[1]));
                 break;
             case SENSOR_HEART_RATE:
-                String heartRateValue = sensorDecoder.decodeHeartRate(values);
+                String heartRateValue = sensorDecoder.decodeHeartRate(sensorData);
                 plugin.setHeartRate(Integer.parseInt(heartRateValue));
                 break;
             case SENSOR_HUMIDITY:
-                String[] humidityValues = sensorDecoder.decodeHumidity(values);
-                plugin.setTemperature(Float.parseFloat(humidityValues[0]));
-                plugin.setHumidity(Float.parseFloat(humidityValues[1]));
+                Float[] humidityValues = sensorDecoder.decodeHumidity(sensorData);
+                plugin.setTemperature(humidityValues[0]);
+                plugin.setHumidity(humidityValues[1]);
                 break;
             case SENSOR_SOUND:
-                sensorDecoder.decodeSound(values);
+//                sensorDecoder.decodeSound(values);
                 break;
             case SENSOR_TEMPERATURE:
-                String[] temperatureValues = sensorDecoder.decodeTemperature(values);
+                String[] temperatureValues = sensorDecoder.decodeTemperature(sensorData);
                 plugin.setAmbientTemperature(Integer.parseInt(temperatureValues[0]));
                 plugin.setInfraredTemperature(Integer.parseInt(temperatureValues[1]));
                 break;
             case SENSOR_TEMPERATURE2:
-                String[] temperature2Values = sensorDecoder.decodeTemperature2(values);
+                String[] temperature2Values = sensorDecoder.decodeTemperature2(sensorData);
                 plugin.setAmbientTemperature(Integer.parseInt(temperature2Values[0]));
                 plugin.setInfraredTemperature(Integer.parseInt(temperature2Values[1]));
                 break;
             case SENSOR_UV:
-                String[] lightValues = sensorDecoder.decodeUV(values);
-                plugin.setLux(Float.parseFloat(lightValues[0]));
+                String[] lightValues = sensorDecoder.decodeUV(sensorData);
+                plugin.setLux(Long.parseLong(lightValues[0]));
                 plugin.setUv(Float.parseFloat(lightValues[1]));
                 break;
             case SENSOR_VOC:
-                String[] vocValues = sensorDecoder.decodeVOC(values);
+                String[] vocValues = sensorDecoder.decodeVOC(sensorData);
                 plugin.setVoc(Integer.parseInt(vocValues[0]));
                 plugin.setCo2(Integer.parseInt(vocValues[1]));
                 break;
             default:
+                Log.e("kiwrious-plugin", "unexpected sensor type "+sensorData[KIWRIOUS_SENSOR_TYPE]);
                 break;
         }
     }

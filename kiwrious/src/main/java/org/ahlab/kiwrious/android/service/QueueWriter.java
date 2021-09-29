@@ -3,7 +3,8 @@ package org.ahlab.kiwrious.android.service;
 import android.util.Log;
 
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
-import org.ahlab.kiwrious.android.serial.QueueExtractor;
+import org.ahlab.kiwrious.android.usb_serial.QueueExtractor;
+import org.ahlab.kiwrious.android.utils.Constants;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -23,10 +24,10 @@ public class QueueWriter extends Thread {
     @Override
     public void run() {
         while (ServiceBlockingQueue.getServiceStatus()) {
-            int[] eData = new int[9];
-            int[] aux;
+            byte[] eData = new byte[Constants.KIWRIOUS_SERIAL_FRAME_SIZE_RX];
+            byte[] aux;
             try {
-                aux = (int[]) blockingQueueRx.take();
+                aux = (byte[]) blockingQueueRx.take();
                 System.arraycopy(aux, 0, eData, 0, eData.length);
                 serviceQueue.offer(eData);
             } catch (Exception e) {

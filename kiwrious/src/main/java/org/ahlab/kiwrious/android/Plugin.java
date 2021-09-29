@@ -4,13 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
-import org.ahlab.kiwrious.android.serial.QueueExtractor;
-import org.ahlab.kiwrious.android.serial.SerialCommunication;
+import org.ahlab.kiwrious.android.usb_serial.QueueExtractor;
 import org.ahlab.kiwrious.android.service.QueueReader;
 import org.ahlab.kiwrious.android.service.QueueWriter;
+import org.ahlab.kiwrious.android.usb_serial.SerialService;
 import org.ahlab.kiwrious.android.utils.Constants;
 
 public class Plugin {
@@ -25,7 +24,7 @@ public class Plugin {
     private int g = -245;
     private int b = -235;
     private float uv = -2.0f;
-    private float lux = -80;
+    private long lux = -80;
     private float humidity = -70;
     private float temperature = -30;
     private int ambientTemperature = -31;
@@ -40,11 +39,12 @@ public class Plugin {
     private boolean isHeartRateOnline = false;
     private boolean isColorOnline = false;
 
-    private SerialCommunication mSerialCommunication;
+    private SerialService serialService;
     QueueWriter queueWriter;
     QueueReader queueReader;
 
-    private Plugin() {}
+    private Plugin() {
+    }
 
     //    ---------------------------------------------------------------------------------------------------------------
 
@@ -52,9 +52,11 @@ public class Plugin {
         this.humidity = humidity;
     }
 
-    public void setTemperature(float temperature) { this.temperature = temperature; }
+    public void setTemperature(float temperature) {
+        this.temperature = temperature;
+    }
 
-    public void setLux(float lux) {
+    public void setLux(long lux) {
         this.lux = lux;
     }
 
@@ -70,27 +72,43 @@ public class Plugin {
         this.resistance = resistance;
     }
 
-    public void setVoc(int voc) { this.voc = voc; }
+    public void setVoc(int voc) {
+        this.voc = voc;
+    }
 
-    public void setR(int r) { this.r = r; }
+    public void setR(int r) {
+        this.r = r;
+    }
 
-    public void setG(int g) { this.g = g; }
+    public void setG(int g) {
+        this.g = g;
+    }
 
-    public void setB(int b) { this.b = b; }
+    public void setB(int b) {
+        this.b = b;
+    }
 
     public void setCo2(int co2) {
         this.co2 = co2;
     }
 
-    public void setAmbientTemperature(int ambientTemperature) { this.ambientTemperature = ambientTemperature; }
+    public void setAmbientTemperature(int ambientTemperature) {
+        this.ambientTemperature = ambientTemperature;
+    }
 
-    public void setInfraredTemperature(int infraredTemperature){ this.infraredTemperature = infraredTemperature; }
+    public void setInfraredTemperature(int infraredTemperature) {
+        this.infraredTemperature = infraredTemperature;
+    }
 
-    public void setHeartRate(int heartRate){ this.heartRate = heartRate; }
+    public void setHeartRate(int heartRate) {
+        this.heartRate = heartRate;
+    }
 
 //    ---------------------------------------------------------------------------------------------------------------
 
-    public float getConductivity() { return conductivity; }
+    public float getConductivity() {
+        return conductivity;
+    }
 
     public long getResistance() {
         return resistance;
@@ -108,7 +126,7 @@ public class Plugin {
         return uv;
     }
 
-    public float getLux() {
+    public long getLux() {
         return lux;
     }
 
@@ -120,17 +138,29 @@ public class Plugin {
         return temperature;
     }
 
-    public int getAmbientTemperature() {return ambientTemperature;}
+    public int getAmbientTemperature() {
+        return ambientTemperature;
+    }
 
-    public int getInfraredTemperature() {return infraredTemperature;}
+    public int getInfraredTemperature() {
+        return infraredTemperature;
+    }
 
-    public int getHeartRate() {return heartRate;}
+    public int getHeartRate() {
+        return heartRate;
+    }
 
-    public int getR() {return r;}
+    public int getR() {
+        return r;
+    }
 
-    public int getG() {return g;}
+    public int getG() {
+        return g;
+    }
 
-    public int getB() {return b;}
+    public int getB() {
+        return b;
+    }
 
     //    ---------------------------------------------------------------------------------------------------------------
 
@@ -138,17 +168,29 @@ public class Plugin {
         return isHumidityOnline;
     }
 
-    public boolean isUvOnline() { return isUvOnline; }
+    public boolean isUvOnline() {
+        return isUvOnline;
+    }
 
-    public boolean isConductivityOnline() { return isConductivityOnline; }
+    public boolean isConductivityOnline() {
+        return isConductivityOnline;
+    }
 
-    public boolean isVocOnline() { return isVocOnline; }
+    public boolean isVocOnline() {
+        return isVocOnline;
+    }
 
-    public boolean isBodyTempOnline() {return isBodyTempOnline; }
+    public boolean isBodyTempOnline() {
+        return isBodyTempOnline;
+    }
 
-    public boolean isHeartRateOnline() {return isHeartRateOnline; }
+    public boolean isHeartRateOnline() {
+        return isHeartRateOnline;
+    }
 
-    public boolean isColorOnline() {return isColorOnline;}
+    public boolean isColorOnline() {
+        return isColorOnline;
+    }
 
     //    ---------------------------------------------------------------------------------------------------------------
 
@@ -170,26 +212,26 @@ public class Plugin {
     private final BroadcastReceiver usbConnectivityReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        if (action.equals(Constants.ACTION_FTDI_SUCCESS)) {
-            setOnlineSensor(getConnectedSensorName());
-            initiateThreads();
-        } else if (action.equals(Constants.ACTION_FTDI_FAIL)) {
-            isHumidityOnline = isVocOnline = isUvOnline = isConductivityOnline = isBodyTempOnline = isHeartRateOnline = isColorOnline = false;
-        }
+            String action = intent.getAction();
+            if (action.equals(Constants.ACTION_FTDI_SUCCESS)) {
+                setOnlineSensor(getConnectedSensorName());
+                initiateThreads();
+            } else if (action.equals(Constants.ACTION_FTDI_FAIL)) {
+                isHumidityOnline = isVocOnline = isUvOnline = isConductivityOnline = isBodyTempOnline = isHeartRateOnline = isColorOnline = false;
+            }
         }
     };
 
     public void initiateReader() {
-        SerialCommunication.clearInstance();
-        mSerialCommunication = SerialCommunication.getInstance(Application.getContext());
+        serialService = SerialService.getInstance(Application.getContext());
+        serialService.initSerialManager(Application.getContext());
         Application.getContext().registerReceiver(usbConnectivityReceiver, getIntentFilters());
     }
 
 
     public boolean startSerialReader() {
         initiateReader();
-        if (mSerialCommunication.isActive() && !isThreadsAlive()) {
+        if (serialService.isConnected() && !isThreadsAlive()) {
             setOnlineSensor(getConnectedSensorName());
             initiateThreads();
             return true;
@@ -198,11 +240,11 @@ public class Plugin {
     }
 
     public String getConnectedSensorName() {
-        return mSerialCommunication.getDeviceProductName();
+        return serialService.getDeviceName();
     }
 
     public void stopSerialReader() {
-        mSerialCommunication.stopSerialCommunications();
+        serialService.stopCommunications(Application.getContext());
     }
 
     private void initiateThreads() {

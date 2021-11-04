@@ -1,9 +1,9 @@
 plugins {
     id 'com.android.library'
-    id 'maven-publish'
+//    id 'maven-publish'
 }
 
-apply plugin: 'maven-publish'
+//apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 30
@@ -47,30 +47,40 @@ task copyPlugin(type: Copy){
     include (project.name + '-release.aar')
 }
 
-def githubProperties = new Properties()
-githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
-
-publishing {
-
-    publications {
-        bar(MavenPublication) {
-            groupId 'org.ahlab.kiwrious.android'
-            artifactId 'kiwrious-sdk'
-            version '0.0.19'
-            artifact("$buildDir/outputs/aar/$project.name-release.aar")
-
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/augmented-human-lab/kiwrious-android-library")
-            credentials {
-                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
-                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
-            }
-        }
-    }
-
+ext {
+    // Provide your own coordinates here
+    PUBLISH_GROUP_ID = 'com.kiwrious.sdk.android'
+    PUBLISH_VERSION = '1.0.1'
+    PUBLISH_ARTIFACT_ID = 'kiwrious-android-library'
 }
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
+
+
+//def githubProperties = new Properties()
+//githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+//
+//publishing {
+//
+//    publications {
+//        bar(MavenPublication) {
+//            groupId 'org.ahlab.kiwrious.android'
+//            artifactId 'kiwrious-sdk'
+//            version '0.0.19'
+//            artifact("$buildDir/outputs/aar/$project.name-release.aar")
+//
+//        }
+//    }
+//
+//    repositories {
+//        maven {
+//            name = "GitHubPackages"
+//            url = uri("https://maven.pkg.github.com/augmented-human-lab/kiwrious-android-library")
+//            credentials {
+//                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+//                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+//            }
+//        }
+//    }
+//
+//}

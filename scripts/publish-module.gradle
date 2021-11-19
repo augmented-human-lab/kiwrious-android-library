@@ -1,5 +1,5 @@
 apply plugin: 'maven-publish'
-//apply plugin: 'signing'
+apply plugin: 'signing'
 
 task androidSourcesJar(type: Jar) {
     archiveClassifier.set('sources')
@@ -91,7 +91,7 @@ afterEvaluate {
 
 }
 
-if (project.hasProperty("signing.keyId")) {
+/*if (project.hasProperty("signing.keyId")) {
     apply plugin: 'signing'
     signing {
 
@@ -103,13 +103,13 @@ if (project.hasProperty("signing.keyId")) {
         sign configurations.archives
 //        sign publishing.publications
     }
-}
+}*/
 
-//signing {
-//    useInMemoryPgpKeys(
-//            rootProject.ext["signing.keyId"],
-//            rootProject.ext["signing.key"],
-//            rootProject.ext["signing.password"],
-//    )
-//    sign publishing.publications
-//}
+signing {
+    useInMemoryPgpKeys(
+            rootProject.ext["signing.keyId"],
+            rootProject.ext["signing.key"],
+            rootProject.ext["signing.password"],
+    )
+    sign publishing.publications
+}

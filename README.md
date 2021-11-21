@@ -113,7 +113,7 @@ String getConnectedSensorName()
     gpg --export-secret-keys [key] | base64
 ```
 
-* update signing properties and sonatype properties in `local.properties` file
+* add signing properties and sonatype properties into `local.properties`
 ```groovy
 signing.keyId=[key]
 signing.password=[passphrase]
@@ -136,15 +136,13 @@ ext {
 gradlew kiwrious:publishReleasePublicationToSonatypeRepository
 ```
 
-* go to 
-(https://s01.oss.sonatype.org/)[nexus repository manager] and login
+* go to [nexus repository manager](https://s01.oss.sonatype.org/) and login
 
 * under the staging repositories, find recently uploaded repository, close it and release it
 
-* releases are available 
-(https://repo1.maven.org/maven2/com/kiwrious/sdk/android/kiwrious-android-library/)[here]
+* releases are available [here](https://repo1.maven.org/maven2/com/kiwrious/sdk/android/kiwrious-android-library/)
 
-* releases are indexed (https://search.maven.org/)[here]
+* releases are indexed [here](https://search.maven.org/)
 
 
 

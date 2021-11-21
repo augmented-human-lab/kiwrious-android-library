@@ -12,9 +12,8 @@ import org.ahlab.kiwrious.android.service.QueueWriter;
 import org.ahlab.kiwrious.android.usb_serial.SerialService;
 import org.ahlab.kiwrious.android.utils.Constants;
 
-public class Plugin {
-
-    private static Plugin instance;
+public class KiwriousReader {
+    private static KiwriousReader instance;
 
     private float conductivity = -1.2f;
     private long resistance = -120;
@@ -43,7 +42,7 @@ public class Plugin {
     QueueWriter queueWriter;
     QueueReader queueReader;
 
-    private Plugin() {
+    private KiwriousReader() {
     }
 
     //    ---------------------------------------------------------------------------------------------------------------
@@ -194,17 +193,17 @@ public class Plugin {
 
     //    ---------------------------------------------------------------------------------------------------------------
 
-    public static Plugin getInstance(Context context) {
+    public static KiwriousReader getInstance(Context context) {
         if (instance == null) {
             new Application(context);
-            instance = new Plugin();
+            instance = new KiwriousReader();
         }
         return instance;
     }
 
-    public static Plugin getInstance() {
+    public static KiwriousReader getInstance() {
         if (instance == null) {
-            instance = new Plugin();
+            instance = new KiwriousReader();
         }
         return instance;
     }

@@ -23,7 +23,7 @@ dependencies {
 }
 ```
 
-# Library usage
+## Library usage
 
 ### Modify AndroidManifest.xml
 ```xml
@@ -113,7 +113,7 @@ String getConnectedSensorName()
     gpg --export-secret-keys [key] | base64
 ```
 
-* paste base64 key value inside local.properties file
+* update signing properties and sonatype properties in `local.properties` file
 ```groovy
 signing.keyId=[key]
 signing.password=[passphrase]
@@ -124,7 +124,7 @@ ossrhPassword=[sonatype_password]
 sonatypeStagingProfileId=[sonatype_staging_id]
 ```
 
-* update library version inside build.gradle
+* update library version inside `build.gradle`
 ```groovy
 ext {
     PUBLISH_VERSION = 'x.y.z'
@@ -135,6 +135,19 @@ ext {
 ```groovy
 gradlew kiwrious:publishReleasePublicationToSonatypeRepository
 ```
+
+* go to 
+(https://s01.oss.sonatype.org/)[nexus repository manager] and login
+
+* under the staging repositories, find recently uploaded repository, close it and release it
+
+* releases are available 
+(https://repo1.maven.org/maven2/com/kiwrious/sdk/android/kiwrious-android-library/)[here]
+
+* releases are indexed (https://search.maven.org/)[here]
+
+
+
 
 
 

@@ -1,38 +1,9 @@
 # Kiwrious Android Library Project
 
-## Library development
-- Run `gradle build`
 
-## Copy aar plugin
-- Update `into` field value inside `copyPlugin` gradle task
-- Run `copyPlugin` gradle task
+## Library installation
 
-
-## Package publishing
-- Create `github.properties` file in your project root folder and add below values into `github.properties` file
-```java 
-gpr.usr=GITHUB_USER
-gpr.key=GITHUB_TOKEN
-```
-- Make sure `github.properties` file is added to gitIgnore
-- Create github developer token with `package write` , `repo` permissions
-- Replace `GITHUB_USER` and `GITHUB_TOKEN` with github username and developer token
-- Increment version code inside `publications` gradle block
-- Run `gradle publish`
-
-## Package integration
-- Grab the latest package name and version from [here](https://github.com/augmented-human-lab/kiwrious-android-library/packages/872446)
-- Create `github.properties` file in your project root folder and add below values into `github.properties` file
-```java 
-gpr.usr=GITHUB_USER
-gpr.key=GITHUB_TOKEN
-```
-- Make sure `github.properties` file is added to gitIgnore
-- Create github developer token with `package read` , `repo` permissions
-- Replace `GITHUB_USER` and `GITHUB_TOKEN` with github username and developer token
-- Add/Merge below code sniplets to your gradle.build file and update values
-
-```java
+```groovy
 android {
    defaultConfig {
       minSdkVersion 26
@@ -40,31 +11,19 @@ android {
 }
 ```
 
-```java
+```groovy
 dependencies {
-   implementation 'org.ahlab.kiwrious.android:kiwrious-sdk:0.0.18'
+   implementation 'com.kiwrious.sdk.android:kiwrious-android-library:1.0.2'
 }
 ```
 
-```java
-def githubProperties = new Properties()
-githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
-```
-
-```java
-repositories {
-   maven {
-       name = "GitHubPackages"
-       url = "https://maven.pkg.github.com/augmented-human-lab/kiwrious-android-library"
-       credentials {
-           username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
-           password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
-       }
-   }
+```groovy
+ repositories {
+    mavenCentral()
 }
 ```
 
-# Kiwrious reader usage
+# Library usage
 
 ### Modify AndroidManifest.xml
 ```xml
@@ -82,8 +41,6 @@ repositories {
       </activity>
    </application>
 </manifest>
-
-
 ```
 
 ### Import packages
@@ -134,6 +91,51 @@ boolean isBodyTempOnline()
 ```java
 String getConnectedSensorName()
 ```
+
+## Copy aar plugin (as Unity3D android plugin)
+- Update `into` field value inside `copyPlugin` gradle task
+- Run `copyPlugin` gradle task
+
+
+## Package publishing
+* create a signing key (RSA and RSA, 4096 bits long)
+```linux
+    gpg --full-gen-key
+```
+
+* send key to a key server (keyserver.ubuntu.com, keys.openpgp.org, hkp://keys.openpgp.org)
+```linux
+    gpg --keyserver [key server] --send-keys [key]
+```
+
+* export key and copy base64 key value
+```linux
+    gpg --export-secret-keys [key] | base64
+```
+
+* paste base64 key value inside local.properties file
+```groovy
+signing.keyId=[key]
+signing.password=[passphrase]
+signing.key=[base64_key_value]
+
+ossrhUsername=[sonatype_username]
+ossrhPassword=[sonatype_password]
+sonatypeStagingProfileId=[sonatype_staging_id]
+```
+
+* update library version inside build.gradle
+```groovy
+ext {
+    PUBLISH_VERSION = 'x.y.z'
+}
+```
+
+* run publish command
+```groovy
+gradlew kiwrious:publishReleasePublicationToSonatypeRepository
+```
+
 
 
 

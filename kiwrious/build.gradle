@@ -50,7 +50,7 @@ task copyPlugin(type: Copy){
 ext {
     // Provide your own coordinates here
     PUBLISH_GROUP_ID = 'com.kiwrious.sdk.android'
-    PUBLISH_VERSION = '1.0.1'
+    PUBLISH_VERSION = '1.0.2'
     PUBLISH_ARTIFACT_ID = 'kiwrious-android-library'
 }
 

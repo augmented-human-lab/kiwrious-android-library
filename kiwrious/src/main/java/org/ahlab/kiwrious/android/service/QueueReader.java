@@ -2,7 +2,7 @@ package org.ahlab.kiwrious.android.service;
 
 import android.util.Log;
 
-import org.ahlab.kiwrious.android.Plugin;
+import org.ahlab.kiwrious.android.KiwriousReader;
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
 import org.ahlab.kiwrious.android.usb_serial.QueueExtractor;
 import org.ahlab.kiwrious.android.tasks.SensorDecoder;
@@ -32,9 +32,9 @@ public class QueueReader extends Thread {
 
     private final SensorDecoder sensorDecoder;
 
-    private final Plugin plugin;
+    private final KiwriousReader plugin;
 
-    public QueueReader(Plugin plugin) {
+    public QueueReader(KiwriousReader plugin) {
         this.isRunning = true;
         this.plugin = plugin;
 

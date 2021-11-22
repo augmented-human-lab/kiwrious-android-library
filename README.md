@@ -45,23 +45,23 @@ dependencies {
 
 ### Import packages
 ```java
-import org.ahlab.kiwrious.android.Plugin;
+import org.ahlab.kiwrious.android.KiwriousReader;
 import android.content.Context;
 ```
 ### Initiate Reader
 ```java
 Context context = getApplicationContext(); // get your application context
-Plugin plugin = Plugin.getInstance(context); // pass it to kiwrious library
+KiwriousReader kiwriousReader = KiwriousReader.getInstance(context); // pass it to kiwrious library
 ```
 
 ### Start Reader
 ```java
-plugin.startSerialReader();
+kiwriousReader.startSerialReader();
 ```
 
 ### Stop Reader
 ```java
-plugin.stopSerialReader();
+kiwriousReader.stopSerialReader();
 ```
 
 ### Get Sensor value

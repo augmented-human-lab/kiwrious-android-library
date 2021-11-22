@@ -59,6 +59,11 @@ afterEvaluate {
                             name = 'Hussel Suriyaarachchi'
                             email = 'hussel@ahlab.org'
                         }
+                        developer {
+                            id = 'juanpaforcor'
+                            name = 'Juan Pablo'
+                            email = 'juan@ahlab.org'
+                        }
                     }
                     scm {
                         connection = 'scm:git:github.com/augmented-human-lab/kiwrious-android-library.git'

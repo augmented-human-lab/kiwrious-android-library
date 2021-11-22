@@ -108,6 +108,11 @@ String getConnectedSensorName()
     gpg --keyserver [key server] --send-keys [key]
 ```
 
+* receive same key from a key server (only for verification)
+```linux
+   gpg --keyserver [key server] --recv-key [key]
+```
+
 * export key and copy base64 key value
 ```linux
     gpg --export-secret-keys [key] | base64

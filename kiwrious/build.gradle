@@ -46,7 +46,7 @@ task copyPlugin(type: Copy){
 
 ext {
     PUBLISH_GROUP_ID = 'com.kiwrious.sdk.android'
-    PUBLISH_VERSION = '1.0.3'
+    PUBLISH_VERSION = '1.0.4'
     PUBLISH_ARTIFACT_ID = 'kiwrious-android-library'
 }
 

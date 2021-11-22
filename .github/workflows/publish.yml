@@ -18,6 +18,10 @@ jobs:
           distribution: adopt
           java-version: 11
 
+        # Grant execute permission for gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
         # Builds the release artifacts of the library
       - name: Release build
         run: ./gradlew kiwrious:assembleRelease

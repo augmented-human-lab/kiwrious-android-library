@@ -6,9 +6,8 @@ task androidSourcesJar(type: Jar) {
     if (project.plugins.findPlugin("com.android.library")) {
         // For Android libraries
         from android.sourceSets.main.java.srcDirs
-//        from android.sourceSets.main.kotlin.srcDirs
     } else {
-        // For pure Kotlin libraries, in case you have them
+        // For pure Kotlin libraries
         from sourceSets.main.java.srcDirs
         from sourceSets.main.kotlin.srcDirs
     }
@@ -25,8 +24,7 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                // The coordinates of the library, being set from variables that
-                // we'll set up later
+                // The coordinates of the library
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
@@ -39,9 +37,7 @@ afterEvaluate {
                 }
 
                 artifact androidSourcesJar
-//                artifact javadocJar
 
-                // Mostly self-explanatory metadata
                 pom {
                     name = PUBLISH_ARTIFACT_ID
                     description = 'Kiwrious official Android SDK'
@@ -63,11 +59,7 @@ afterEvaluate {
                             name = 'Hussel Suriyaarachchi'
                             email = 'hussel@ahlab.org'
                         }
-                        // Add all other devs here...
                     }
-
-                    // Version control info - if you're using GitHub, follow the
-                    // format as seen here
                     scm {
                         connection = 'scm:git:github.com/augmented-human-lab/kiwrious-android-library.git'
                         developerConnection = 'scm:git:ssh://github.com/augmented-human-lab/kiwrious-android-library.git'
@@ -76,34 +68,9 @@ afterEvaluate {
                 }
             }
         }
-//        repositories {
-//            maven {
-//                name = "sonatype"
-//                url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-//
-//                credentials {
-//                    username ossrhUsername
-//                    password ossrhPassword
-//                }
-//            }
-//        }
     }
 
 }
-
-/*if (project.hasProperty("signing.keyId")) {
-    apply plugin: 'signing'
-    signing {
-
-        useInMemoryPgpKeys(
-            rootProject.ext["signing.keyId"],
-            rootProject.ext["signing.key"],
-            rootProject.ext["signing.password"],
-        )
-        sign configurations.archives
-//        sign publishing.publications
-    }
-}*/
 
 signing {
     useInMemoryPgpKeys(

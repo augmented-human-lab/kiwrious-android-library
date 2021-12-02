@@ -1,3 +1,5 @@
+// guide: https://getstream.io/blog/publishing-libraries-to-mavencentral-2021/#overview
+
 // Create variables with empty default values
 ext["ossrhUsername"] = ''
 ext["ossrhPassword"] = ''

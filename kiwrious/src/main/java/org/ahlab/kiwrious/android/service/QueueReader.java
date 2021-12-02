@@ -32,11 +32,11 @@ public class QueueReader extends Thread {
 
     private final SensorDecoder sensorDecoder;
 
-    private final KiwriousReader plugin;
+    private final KiwriousReader kiwriousReader;
 
-    public QueueReader(KiwriousReader plugin) {
+    public QueueReader(KiwriousReader kiwriousReader) {
         this.isRunning = true;
-        this.plugin = plugin;
+        this.kiwriousReader = kiwriousReader;
 
         ServiceBlockingQueue serviceBlockingQueue = ServiceBlockingQueue.getInstance();
         this.serviceQueue = serviceBlockingQueue.getServiceQueue();
@@ -65,50 +65,51 @@ public class QueueReader extends Thread {
     }
 
     private void decode(byte[] sensorData) {
+        kiwriousReader.setRawValues(sensorData);
         switch (sensorData[KIWRIOUS_SENSOR_TYPE]) {
             //TODO: complete decode calls using bye array data
             case SENSOR_COLOUR:
                 String[] colorValues = sensorDecoder.decodeColor(sensorData);
-                plugin.setR(Integer.parseInt(colorValues[0]));
-                plugin.setG(Integer.parseInt(colorValues[1]));
-                plugin.setB(Integer.parseInt(colorValues[2]));
+                kiwriousReader.setR(Integer.parseInt(colorValues[0]));
+                kiwriousReader.setG(Integer.parseInt(colorValues[1]));
+                kiwriousReader.setB(Integer.parseInt(colorValues[2]));
                 break;
             case SENSOR_CONDUCTIVITY:
                 String[] conductivityValues = sensorDecoder.decodeConductivity(sensorData);
-                plugin.setResistance(Long.parseLong(conductivityValues[0]));
-                plugin.setConductivity(Float.parseFloat(conductivityValues[1]));
+                kiwriousReader.setResistance(Long.parseLong(conductivityValues[0]));
+                kiwriousReader.setConductivity(Float.parseFloat(conductivityValues[1]));
                 break;
             case SENSOR_HEART_RATE:
                 String heartRateValue = sensorDecoder.decodeHeartRate(sensorData);
-                plugin.setHeartRate(Integer.parseInt(heartRateValue));
+                kiwriousReader.setHeartRate(Integer.parseInt(heartRateValue));
                 break;
             case SENSOR_HUMIDITY:
                 Float[] humidityValues = sensorDecoder.decodeHumidity(sensorData);
-                plugin.setTemperature(humidityValues[0]);
-                plugin.setHumidity(humidityValues[1]);
+                kiwriousReader.setTemperature(humidityValues[0]);
+                kiwriousReader.setHumidity(humidityValues[1]);
                 break;
             case SENSOR_SOUND:
 //                sensorDecoder.decodeSound(values);
                 break;
             case SENSOR_TEMPERATURE:
                 String[] temperatureValues = sensorDecoder.decodeTemperature(sensorData);
-                plugin.setAmbientTemperature(Integer.parseInt(temperatureValues[0]));
-                plugin.setInfraredTemperature(Integer.parseInt(temperatureValues[1]));
+                kiwriousReader.setAmbientTemperature(Integer.parseInt(temperatureValues[0]));
+                kiwriousReader.setInfraredTemperature(Integer.parseInt(temperatureValues[1]));
                 break;
             case SENSOR_TEMPERATURE2:
                 String[] temperature2Values = sensorDecoder.decodeTemperature2(sensorData);
-                plugin.setAmbientTemperature(Integer.parseInt(temperature2Values[0]));
-                plugin.setInfraredTemperature(Integer.parseInt(temperature2Values[1]));
+                kiwriousReader.setAmbientTemperature(Integer.parseInt(temperature2Values[0]));
+                kiwriousReader.setInfraredTemperature(Integer.parseInt(temperature2Values[1]));
                 break;
             case SENSOR_UV:
                 String[] lightValues = sensorDecoder.decodeUV(sensorData);
-                plugin.setLux(Long.parseLong(lightValues[0]));
-                plugin.setUv(Float.parseFloat(lightValues[1]));
+                kiwriousReader.setLux(Long.parseLong(lightValues[0]));
+                kiwriousReader.setUv(Float.parseFloat(lightValues[1]));
                 break;
             case SENSOR_VOC:
                 String[] vocValues = sensorDecoder.decodeVOC(sensorData);
-                plugin.setVoc(Integer.parseInt(vocValues[0]));
-                plugin.setCo2(Integer.parseInt(vocValues[1]));
+                kiwriousReader.setVoc(Integer.parseInt(vocValues[0]));
+                kiwriousReader.setCo2(Integer.parseInt(vocValues[1]));
                 break;
             default:
                 Log.e("kiwrious-plugin", "unexpected sensor type "+sensorData[KIWRIOUS_SENSOR_TYPE]);

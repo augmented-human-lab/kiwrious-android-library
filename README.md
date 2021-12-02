@@ -63,8 +63,12 @@ kiwriousReader.startSerialReader();
 ```java
 kiwriousReader.stopSerialReader();
 ```
+### Get raw value from sensor
+```java
+byte[] getRawValues()
+```
 
-### Get Sensor value
+### Get decoded Sensor value
 ```java
 float getConductivity()
 long getResistance()
@@ -92,9 +96,9 @@ boolean isBodyTempOnline()
 String getConnectedSensorName()
 ```
 
-## Copy aar plugin (as Unity3D android plugin)
-- Update `into` field value inside `copyPlugin` gradle task
-- Run `copyPlugin` gradle task
+## Copy aar plugin
+- Update `into` field value inside `copyAndroidArchiveBinary` gradle task
+- Run `gradle copyAndroidArchiveBinary` 
 
 
 ## Package publishing

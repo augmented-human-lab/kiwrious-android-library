@@ -30,6 +30,8 @@ public class KiwriousReader {
     private int infraredTemperature = -32;
     private int heartRate = -72;
 
+    private byte[] rawValues;
+
     private boolean isConductivityOnline = false;
     private boolean isVocOnline = false;
     private boolean isUvOnline = false;
@@ -41,6 +43,8 @@ public class KiwriousReader {
     private SerialService serialService;
     QueueWriter queueWriter;
     QueueReader queueReader;
+
+    public KiwriousCallback SensorConnected;
 
     private KiwriousReader() {
     }
@@ -103,6 +107,10 @@ public class KiwriousReader {
         this.heartRate = heartRate;
     }
 
+    public void setRawValues(byte[] rawValues){
+        this.rawValues = rawValues;
+    }
+
 //    ---------------------------------------------------------------------------------------------------------------
 
     public float getConductivity() {
@@ -160,6 +168,8 @@ public class KiwriousReader {
     public int getB() {
         return b;
     }
+
+    public byte[] getRawValues() {return rawValues; }
 
     //    ---------------------------------------------------------------------------------------------------------------
 

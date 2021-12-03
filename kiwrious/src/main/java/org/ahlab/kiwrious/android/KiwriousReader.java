@@ -285,6 +285,9 @@ public class KiwriousReader {
             case (Constants.KIWRIOUS_UV):
                 isUvOnline = true;
                 break;
+            case (Constants.KIWRIOUS_UV2):
+                isUvOnline = true;
+                break;
             case (Constants.KIWRIOUS_VOC):
                 isVocOnline = true;
                 break;

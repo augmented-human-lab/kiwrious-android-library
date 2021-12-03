@@ -8,6 +8,7 @@ public class Constants {
     public static final String KIWRIOUS_CONDUCTIVITY = "Kiwrious Conductance Sensor";
     public static final String KIWRIOUS_HUMIDITY = "Kiwrious Humidity Sensor";
     public static final String KIWRIOUS_UV = "Kiwrious UV Sensor";
+    public static final String KIWRIOUS_UV2 = "Kiwrious UV and Light Sensor";
     public static final String KIWRIOUS_VOC = "Kiwrious VOC Sensor";
     public static final String KIWRIOUS_TEMPERATURE = "Kiwrious Temperature Sensor";
     public static final String KIWRIOUS_HEART_RATE = "Kiwrious Heart Rate Sensor";

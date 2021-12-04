@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
 import org.ahlab.kiwrious.android.usb_serial.QueueExtractor;
@@ -13,11 +12,12 @@ import org.ahlab.kiwrious.android.service.QueueWriter;
 import org.ahlab.kiwrious.android.usb_serial.SerialService;
 import org.ahlab.kiwrious.android.utils.Constants;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static org.ahlab.kiwrious.android.utils.Constants.KIWRIOUS_SERIAL_FRAME_SIZE_RX;
+import static org.ahlab.kiwrious.android.utils.Constants.supportedSensors;
 
 public class KiwriousReader {
     private static KiwriousReader instance;
@@ -37,34 +37,22 @@ public class KiwriousReader {
     private int infraredTemperature = 0;
     private int heartRate = 0;
 
-    private byte[] rawValues = new byte[26];
+    private byte[] rawValues = new byte[KIWRIOUS_SERIAL_FRAME_SIZE_RX];
 
     private SerialService serialService;
 
-    QueueWriter queueWriter;
-    QueueReader queueReader;
+    private QueueWriter queueWriter;
+    private QueueReader queueReader;
 
     public KiwriousCallback SensorConnected;
 
     private HashMap<String, Boolean> sensorStatus = new HashMap<>();
-
-    private String[] supportedSensors = {
-            Constants.KIWRIOUS_COLOUR, 
-            Constants.KIWRIOUS_HEART_RATE, 
-            Constants.KIWRIOUS_CONDUCTIVITY, 
-            Constants.KIWRIOUS_HUMIDITY, 
-            Constants.KIWRIOUS_TEMPERATURE, 
-            Constants.KIWRIOUS_UV, 
-            Constants.KIWRIOUS_UV2,
-            Constants.KIWRIOUS_VOC
-    };
 
     private KiwriousReader() {
         for (String sensorName : supportedSensors)
         {
            sensorStatus.put(sensorName, false);
         }
-
     }
 
     //    ---------------------------------------------------------------------------------------------------------------
@@ -190,6 +178,10 @@ public class KiwriousReader {
     public byte[] getRawValues() {return rawValues; }
 
     //    ---------------------------------------------------------------------------------------------------------------
+
+    public boolean isSensorOnline(String sensorName){
+        return sensorStatus.get(sensorName);
+    }
 
     public boolean isHumidityOnline() {
         return sensorStatus.get(Constants.KIWRIOUS_HUMIDITY);

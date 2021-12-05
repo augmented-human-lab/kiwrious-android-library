@@ -10,13 +10,12 @@ import org.ahlab.kiwrious.android.tasks.SensorDecoder;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static org.ahlab.kiwrious.android.utils.Constants.KIWRIOUS_SENSOR_TYPE;
+import static org.ahlab.kiwrious.android.utils.Constants.KIWRIOUS_SENSOR_TYPE_INDEX;
 import static org.ahlab.kiwrious.android.utils.Constants.KIWRIOUS_SERIAL_FRAME_SIZE_RX;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_COLOUR;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_CONDUCTIVITY;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_HEART_RATE;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_HUMIDITY;
-import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_SOUND;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_TEMPERATURE;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_TEMPERATURE2;
 import static org.ahlab.kiwrious.android.utils.Constants.SENSOR_UV;
@@ -66,8 +65,7 @@ public class QueueReader extends Thread {
 
     private void decode(byte[] sensorData) {
         kiwriousReader.setRawValues(sensorData);
-        switch (sensorData[KIWRIOUS_SENSOR_TYPE]) {
-            //TODO: complete decode calls using bye array data
+        switch (sensorData[KIWRIOUS_SENSOR_TYPE_INDEX]) {
             case SENSOR_COLOUR:
                 String[] colorValues = sensorDecoder.decodeColor(sensorData);
                 kiwriousReader.setR(Integer.parseInt(colorValues[0]));
@@ -87,9 +85,6 @@ public class QueueReader extends Thread {
                 Float[] humidityValues = sensorDecoder.decodeHumidity(sensorData);
                 kiwriousReader.setTemperature(humidityValues[0]);
                 kiwriousReader.setHumidity(humidityValues[1]);
-                break;
-            case SENSOR_SOUND:
-//                sensorDecoder.decodeSound(values);
                 break;
             case SENSOR_TEMPERATURE:
                 String[] temperatureValues = sensorDecoder.decodeTemperature(sensorData);
@@ -112,7 +107,7 @@ public class QueueReader extends Thread {
                 kiwriousReader.setCo2(Integer.parseInt(vocValues[1]));
                 break;
             default:
-                Log.e("kiwrious-plugin", "unexpected sensor type "+sensorData[KIWRIOUS_SENSOR_TYPE]);
+                Log.e("kiwrious-plugin", "unexpected sensor type "+sensorData[KIWRIOUS_SENSOR_TYPE_INDEX]);
                 break;
         }
     }

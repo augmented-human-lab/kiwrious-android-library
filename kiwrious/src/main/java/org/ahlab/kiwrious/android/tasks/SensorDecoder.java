@@ -86,10 +86,6 @@ public class SensorDecoder {
         return heartRateValue;
     }
 
-    public void decodeSound(Integer... mValues) {
-        //TODO: decode using byte values
-    }
-
     public String[] decodeTemperature(byte[] sensorData) {
         String[] temperatureValues = new String[2];
 

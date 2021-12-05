@@ -56,7 +56,11 @@ public class SerialService {
     }
 
     public String getDeviceName() {
-        return usbDevice.getProductName();
+        if(isConnected){
+            return usbDevice.getProductName();
+        } else {
+            return "";
+        }
     }
 
     public void initSerialManager(Context context) {

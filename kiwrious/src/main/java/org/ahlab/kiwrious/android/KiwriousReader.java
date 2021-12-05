@@ -12,41 +12,47 @@ import org.ahlab.kiwrious.android.service.QueueWriter;
 import org.ahlab.kiwrious.android.usb_serial.SerialService;
 import org.ahlab.kiwrious.android.utils.Constants;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.ahlab.kiwrious.android.utils.Constants.KIWRIOUS_SERIAL_FRAME_SIZE_RX;
+import static org.ahlab.kiwrious.android.utils.Constants.supportedSensors;
+
 public class KiwriousReader {
     private static KiwriousReader instance;
 
-    private float conductivity = -1.2f;
-    private long resistance = -120;
-    private int voc = -32;
-    private int co2 = -32;
-    private int r = -255;
-    private int g = -245;
-    private int b = -235;
-    private float uv = -2.0f;
-    private long lux = -80;
-    private float humidity = -70;
-    private float temperature = -30;
-    private int ambientTemperature = -31;
-    private int infraredTemperature = -32;
-    private int heartRate = -72;
+    private float conductivity = 0;
+    private long resistance = 0;
+    private int voc = 0;
+    private int co2 = 0;
+    private int r = 0;
+    private int g = 0;
+    private int b = 0;
+    private float uv = 0;
+    private long lux = 0;
+    private float humidity = 0;
+    private float temperature = 0;
+    private int ambientTemperature = 0;
+    private int infraredTemperature = 0;
+    private int heartRate = 0;
 
-    private byte[] rawValues;
-
-    private boolean isConductivityOnline = false;
-    private boolean isVocOnline = false;
-    private boolean isUvOnline = false;
-    private boolean isHumidityOnline = false;
-    private boolean isBodyTempOnline = false;
-    private boolean isHeartRateOnline = false;
-    private boolean isColorOnline = false;
+    private byte[] rawValues = new byte[KIWRIOUS_SERIAL_FRAME_SIZE_RX];
 
     private SerialService serialService;
-    QueueWriter queueWriter;
-    QueueReader queueReader;
+
+    private QueueWriter queueWriter;
+    private QueueReader queueReader;
 
     public KiwriousCallback SensorConnected;
 
+    private HashMap<String, Boolean> sensorStatus = new HashMap<>();
+
     private KiwriousReader() {
+        for (String sensorName : supportedSensors)
+        {
+           sensorStatus.put(sensorName, false);
+        }
     }
 
     //    ---------------------------------------------------------------------------------------------------------------
@@ -173,32 +179,36 @@ public class KiwriousReader {
 
     //    ---------------------------------------------------------------------------------------------------------------
 
+    public boolean isSensorOnline(String sensorName){
+        return sensorStatus.get(sensorName);
+    }
+
     public boolean isHumidityOnline() {
-        return isHumidityOnline;
+        return sensorStatus.get(Constants.KIWRIOUS_HUMIDITY);
     }
 
     public boolean isUvOnline() {
-        return isUvOnline;
+        return sensorStatus.get(Constants.KIWRIOUS_UV) || sensorStatus.get(Constants.KIWRIOUS_UV2);
     }
 
     public boolean isConductivityOnline() {
-        return isConductivityOnline;
+        return sensorStatus.get(Constants.KIWRIOUS_CONDUCTIVITY);
     }
 
     public boolean isVocOnline() {
-        return isVocOnline;
+        return sensorStatus.get(Constants.KIWRIOUS_VOC);
     }
 
     public boolean isBodyTempOnline() {
-        return isBodyTempOnline;
+        return sensorStatus.get(Constants.KIWRIOUS_TEMPERATURE);
     }
 
     public boolean isHeartRateOnline() {
-        return isHeartRateOnline;
+        return sensorStatus.get(Constants.KIWRIOUS_HEART_RATE);
     }
 
     public boolean isColorOnline() {
-        return isColorOnline;
+        return sensorStatus.get(Constants.KIWRIOUS_COLOUR);
     }
 
     //    ---------------------------------------------------------------------------------------------------------------
@@ -222,11 +232,14 @@ public class KiwriousReader {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(Constants.ACTION_FTDI_SUCCESS)) {
+            if (action.equals(Constants.ACTION_FTDI_SUCCESS)) { // usb device connected
                 setOnlineSensor(getConnectedSensorName());
                 initiateThreads();
-            } else if (action.equals(Constants.ACTION_FTDI_FAIL)) {
-                isHumidityOnline = isVocOnline = isUvOnline = isConductivityOnline = isBodyTempOnline = isHeartRateOnline = isColorOnline = false;
+            } else if (action.equals(Constants.ACTION_FTDI_FAIL)) { // usb device removed
+                for(Map.Entry<String, Boolean> entry : sensorStatus.entrySet()) {
+                    String sensorName = entry.getKey();
+                    sensorStatus.put(sensorName, false);
+                }
             }
         }
     };
@@ -275,33 +288,9 @@ public class KiwriousReader {
     }
 
     private void setOnlineSensor(String deviceName) {
-        switch (deviceName) {
-            case (Constants.KIWRIOUS_CONDUCTIVITY):
-                isConductivityOnline = true;
-                break;
-            case (Constants.KIWRIOUS_HUMIDITY):
-                isHumidityOnline = true;
-                break;
-            case (Constants.KIWRIOUS_UV):
-                isUvOnline = true;
-                break;
-            case (Constants.KIWRIOUS_UV2):
-                isUvOnline = true;
-                break;
-            case (Constants.KIWRIOUS_VOC):
-                isVocOnline = true;
-                break;
-            case (Constants.KIWRIOUS_TEMPERATURE):
-                isBodyTempOnline = true;
-                break;
-            case (Constants.KIWRIOUS_HEART_RATE):
-                isHeartRateOnline = true;
-                break;
-            case (Constants.KIWRIOUS_COLOUR):
-                isColorOnline = true;
-                break;
-            default:
-                break;
+        boolean isKiwriousDevice = Arrays.asList(supportedSensors).contains(deviceName);
+        if(isKiwriousDevice){
+            sensorStatus.put(deviceName, true);
         }
     }
 

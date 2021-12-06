@@ -34,20 +34,21 @@ public class SerialService {
     private static final String ACTION_USB_PERMISSION = "org.ahlab.kiwrious.android.USB_PERMISSION";
 
     public SerialService(Context context) {
+
+        usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
         permissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), 0);
         IntentFilter usbPermissionIntentFilter = new IntentFilter(ACTION_USB_PERMISSION);
         context.registerReceiver(usbReceiver, usbPermissionIntentFilter);
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        context.registerReceiver(onUsbAttachReceiver, intentFilter);
-        context.registerReceiver(onUsbDetachReceiver, intentFilter);
+        IntentFilter usbConnectionIntentFilter = new IntentFilter();
+        usbConnectionIntentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        usbConnectionIntentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        context.registerReceiver(onUsbAttachReceiver, usbConnectionIntentFilter);
+        context.registerReceiver(onUsbDetachReceiver, usbConnectionIntentFilter);
 
         QueueExtractor queueExtractor = QueueExtractor.getInstance();
         blockingQueueRx = queueExtractor.getQueueRx();
 
-        usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
     }
 
     public static SerialService getInstance(Context context) {
@@ -167,11 +168,14 @@ public class SerialService {
     private final BroadcastReceiver onUsbDetachReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                Log.w(TAG, "- - - - - - - - - - -  USB ACTION DETACHED  - - - - - - - - - - - -");
+        String action = intent.getAction();
+        if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+            Log.w(TAG, "- - - - - - - - - - -  USB ACTION DETACHED  - - - - - - - - - - - -");
+            UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+            if(device != null){
                 stopCommunications(context);
             }
+        }
         }
     };
 }

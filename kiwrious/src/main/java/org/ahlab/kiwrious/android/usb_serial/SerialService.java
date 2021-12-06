@@ -1,5 +1,6 @@
 package org.ahlab.kiwrious.android.usb_serial;
 
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
+import org.ahlab.kiwrious.android.Application;
 import org.ahlab.kiwrious.android.models.ServiceBlockingQueue;
 import org.ahlab.kiwrious.android.utils.Constants;
 
@@ -29,8 +31,12 @@ public class SerialService {
     private final BlockingQueue<byte[]> blockingQueueRx;
 
     private boolean isConnected;
+    private static final String ACTION_USB_PERMISSION = "org.ahlab.kiwrious.android.USB_PERMISSION";
 
     public SerialService(Context context) {
+        permissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        IntentFilter usbPermissionIntentFilter = new IntentFilter(ACTION_USB_PERMISSION);
+        context.registerReceiver(usbReceiver, usbPermissionIntentFilter);
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
@@ -63,12 +69,37 @@ public class SerialService {
         }
     }
 
+    private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                synchronized (this) {
+                    UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        usbDevice = device;
+                        startCommunications(context);
+                    }
+                    else {
+                        Log.d(TAG, "permission denied for device " + device);
+                    }
+                }
+            }
+        }
+    };
+
+
+    private static PendingIntent permissionIntent;
+
     public void initSerialManager(Context context) {
         if (!isConnected) {
             HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
             for (UsbDevice device : deviceList.values()) {
                 if (!usbManager.hasPermission(device)) {
+                    // request permission
+
                     Log.w(TAG, "No permissions for " + device.getDeviceName());
+                    usbManager.requestPermission(device, permissionIntent);
+
                 } else {
                     Log.w(TAG, "---------------------- Permission Granted -------------------------");
                     usbDevice = device;
@@ -144,3 +175,5 @@ public class SerialService {
         }
     };
 }
+
+// https://developer.android.com/guide/topics/connectivity/usb/host
